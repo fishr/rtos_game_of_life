@@ -1,0 +1,49 @@
+\documentclass{article}
+\usepackage{fullpage}
+
+\title{16.35 PSet \#1}
+\author{Ryan Fish}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Pre-deliverables}
+\section{Real-time Systems and Software}
+\begin{itemize}
+\item Learn the language of software requirements so I can communicate them to a design team, and interpret needs from conversations with customers.
+\item Be exposed to common errors made in this field so I may learn by example rather than experience.  Life-critical systems aren't a good place for learning by experience.
+\item Practice building real-time software and systems to prepare for a hopeful career in embedded mechanical control systems.
+\end{itemize}
+\section{Documentation}
+\subsection{Java version on Athena}
+\begin{enumerate}
+	\item 1.7.0\_65
+	\item ran \verb! java -version ! on an athena remote session
+	\item Googled \verb| check java version linux | and logged in to athena remotely, maybe 45 seconds all told
+\end{enumerate}
+
+
+\subsection{Enable assertions}
+\begin{enumerate}
+	\item  Assertions in the program are enabled by running java with the \verb| -ea | flag
+	\item http://docs.oracle.com/javase/8/docs/technotes/guides/language/assert.html\#enable-disable
+	\item 20 seconds via Google
+\end{enumerate}
+
+\subsection{Double to string}
+\begin{enumerate}
+	\item \verb|String doub = Double.toString(num) | where \verb| num | is the input double and \verb| doub | is the output String
+	\item http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html
+	\item found via google, 2 minutes to verify it produces the expected output
+\end{enumerate}
+
+\subsection{Create jar with files from dir \tt asstl}
+\begin{enumerate}
+	\item \verb|jar cf asstl.jar asstl|
+	\item http://docs.oracle.com/javase/tutorial/deployment/jar/build.html
+	\item 20 seconds via Google
+\end{enumerate}
+
+
+\end{document}
