@@ -69,17 +69,32 @@ public class GroundVehicle {
 			this.pose[2]=util.wrapAngle(Math.atan(vels[1]/vels[0])+Math.PI); //shift these guys to the left half plane
 		}
 
-		//if net velocity magnitude exceeds bounds, the nearest (euclidean) velocity is a scaled
-		//version of the velocity vector
-		double s2 = vels[0]*vels[0]+vels[1]*vels[1];
-		if(!util.withinBounds(s2, MIN_S_DOT*MIN_S_DOT, MAX_S_DOT*MAX_S_DOT)){
-			if(s2>MAX_S_DOT*MAX_S_DOT){
-				
-			}
-		}
+		//If input velocities do not conform in the worst way 
+		//(ie both 0), the result will be the minimum allowed velocity in the current direction
+		
+		double s = Math.sqrt(vels[0]*vels[0]+vels[1]*vels[1]);
+		Control c = new Control(s, vels[2]);
+		controlVehicle(c);
 	}
 	
-	//FOR PHYSICS ENGINE:  THE ROTATIONAL VELOCITY GIVES A DURATION UNTIL A FULL CIRCLE IS MADE
-	//USE THIS DURATION PLUS THE TRANSLATIONAL VELOCITY MAGNITUDE TO DETERMINE DIAMETER OF INSCRIBED
-	//CIRCLE.  THEN USE TIME INTERVAL TO DETERMINE ARC SEGMENT, AND CALCULATE XY COORD OF CIRCLE
+	public void controlVehicle(Control c){
+		if(!util.withinBounds(c.getSpeed(), MIN_S_DOT, MAX_S_DOT)){
+			if(c.getSpeed()>MAX_S_DOT){
+				this.speeds[0]=MAX_S_DOT;
+			}else if(c.getSpeed()<MIN_S_DOT){
+				this.speeds[0]=MIN_S_DOT;
+			}
+		}else{
+			this.speeds[0]=c.getSpeed();
+		}
+		this.speeds[1]=util.clampDouble(c.getRotVel(), MIN_THETA_DOT, MAX_THETA_DOT);
+	}
+	
+	public void updateState(int sec, int msec){
+		//FOR PHYSICS ENGINE:  THE ROTATIONAL VELOCITY GIVES A DURATION UNTIL A FULL CIRCLE IS MADE
+		//USE THIS DURATION PLUS THE TRANSLATIONAL VELOCITY MAGNITUDE TO DETERMINE DIAMETER OF INSCRIBED
+		//CIRCLE.  THEN USE TIME INTERVAL TO DETERMINE ARC SEGMENT, AND CALCULATE XY COORD OF CIRCLE
+		
+		
+	}
 }

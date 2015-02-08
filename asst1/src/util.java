@@ -2,6 +2,7 @@
 public class util {
 
 	public static double clampDouble(double input, double lower, double upper){
+		assert(lower<=upper);
 		return Math.max(Math.min(input, upper), lower);
 	}
 
