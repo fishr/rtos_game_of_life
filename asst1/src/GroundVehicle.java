@@ -31,11 +31,11 @@ public class GroundVehicle {
 		this.speeds[1]=omega;
 	}
 	
-	public double[] getPostion(){
+	double[] getPostion(){
 		return pose;
 	}
 	
-	public double[] getVelocity(){
+	double[] getVelocity(){
 		double[] temp = new double[3];
 		temp[0]=speeds[0]*Math.cos(pose[2]);
 		temp[1]=speeds[0]*Math.sin(pose[2]);
@@ -43,7 +43,7 @@ public class GroundVehicle {
 		return temp;
 	}
 	
-	public void setPosition(double[] pose){
+	void setPosition(double[] pose){
 		assert(pose.length==3);
 		
 		this.pose[0] = util.clampDouble(pose[0], MIN_X, MAX_X);
@@ -51,7 +51,7 @@ public class GroundVehicle {
 		this.pose[2] = util.wrapAngle(pose[2]);
 	}
 	
-	public void setVelocity(double[] vels){
+	void setVelocity(double[] vels){
 		assert(vels.length==3);
 		
 		this.speeds[1] = util.clampDouble(vels[2], MIN_THETA_DOT, MAX_THETA_DOT);
@@ -64,7 +64,7 @@ public class GroundVehicle {
 				this.pose[2]=Math.PI*Math.signum(vels[1]); 	//careful, need to sanitize inputs first to make
 			}										//its ok if we get zero velocity inputs
 		}else if(vels[0]>0){
-			this.pose[2]=Math.atan(vels[1]/vels[0]);
+			this.pose[2]=Math.atan(vels[1]/vels[0]);  //thankfully atan handles over and underflow pretty well
 		}else{
 			this.pose[2]=util.wrapAngle(Math.atan(vels[1]/vels[0])+Math.PI); //shift these guys to the left half plane
 		}
@@ -77,7 +77,9 @@ public class GroundVehicle {
 		controlVehicle(c);
 	}
 	
-	public void controlVehicle(Control c){
+	void controlVehicle(Control c){
+		assert c!=null : "Control is null";
+		
 		if(!util.withinBounds(c.getSpeed(), MIN_S_DOT, MAX_S_DOT)){
 			if(c.getSpeed()>MAX_S_DOT){
 				this.speeds[0]=MAX_S_DOT;
@@ -90,11 +92,28 @@ public class GroundVehicle {
 		this.speeds[1]=util.clampDouble(c.getRotVel(), MIN_THETA_DOT, MAX_THETA_DOT);
 	}
 	
-	public void updateState(int sec, int msec){
+	void updateState(int sec, int msec){
+		assert(sec>=0);
+		assert(msec>=0);
 		//FOR PHYSICS ENGINE:  THE ROTATIONAL VELOCITY GIVES A DURATION UNTIL A FULL CIRCLE IS MADE
 		//USE THIS DURATION PLUS THE TRANSLATIONAL VELOCITY MAGNITUDE TO DETERMINE DIAMETER OF INSCRIBED
 		//CIRCLE.  THEN USE TIME INTERVAL TO DETERMINE ARC SEGMENT, AND CALCULATE XY COORD OF CIRCLE
+		double s = this.speeds[0];
+		double omega = this.speeds[1];
 		
-		
+		if(Math.abs(omega)<=(s*2*Math.PI/Double.MAX_VALUE)){
+			//TODO straight line case
+		}else{
+			double timePerCycle = 2*Math.PI/omega;
+			double circumference = s*timePerCycle;  //may be up to MAX_VAL
+			//double dist = (s*sec+s*msec/1000.0)%circumference;
+			double arc = (omega*sec+omega*msec/1000.0)%(2*Math.PI);
+			double radius = circumference/(2*Math.PI); 
+			double dx = Math.cos(this.pose[2]+Math.PI*Math.signum(radius))*radius;  //these values may get large enough
+			double dy = Math.sin(this.pose[2]+Math.PI*Math.signum(radius))*radius;  //that they no longer work as deltas
+																					//may consider broadening "straight line"
+			
+			//TODO: the whole thing
+		}
 	}
 }

@@ -11,11 +11,11 @@ public class Control {
 		this.omega=omega;
 	}
 	
-	public double getSpeed(){
+	double getSpeed(){
 		return this.s;
 	}
 
-	public double getRotVel(){
+	double getRotVel(){
 		return this.omega;
 	}
 }
