@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.7)  8 FEB 2015 22:15
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2015.2.7)  9 FEB 2015 16:43
 entering extended mode
 **pset1.tex
-(C:\Users\Ryan\Desktop\Dropbox\1635\fishr\asst1\pset1.tex
+(C:\Users\Ryan\Desktop\Dropbox\1635\fishr\scratch\asst1\pset1.tex
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -34,7 +34,7 @@ File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 Package: fullpage 1999/02/23 1.1 (PWD)
 \FP@margin=\skip43
 )
-(C:\Users\Ryan\Desktop\Dropbox\1635\fishr\asst1\pset1.aux)
+(C:\Users\Ryan\Desktop\Dropbox\1635\fishr\scratch\asst1\pset1.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 8.
 LaTeX Font Info:    ... okay on input line 8.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 8.
@@ -63,24 +63,24 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
  [1
 
 {C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}] [2]
-(C:\Users\Ryan\Desktop\Dropbox\1635\fishr\asst1\pset1.aux) ) 
+(C:\Users\Ryan\Desktop\Dropbox\1635\fishr\scratch\asst1\pset1.aux) ) 
 Here is how much of TeX's memory you used:
  273 strings out of 493921
- 3452 string characters out of 3144880
+ 3508 string characters out of 3144880
  53031 words of memory out of 3000000
  3632 multiletter control sequences out of 15000+200000
  7924 words of font info for 29 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  23i,6n,19p,249b,187s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files (
-x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files (x8
-6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/
-MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiK
-TeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files (x86)/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2
-.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9
-/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on pset1.pdf (2 pages, 83028 bytes).
+<C:/Program
+ Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program F
+iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program File
+s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (
+x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files (x86
+)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/
+MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files (x86)/Mi
+KTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on pset1.pdf (2 pages, 83040 bytes).
 PDF statistics:
  37 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
