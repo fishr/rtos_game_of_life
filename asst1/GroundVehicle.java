@@ -32,7 +32,7 @@ public class GroundVehicle {
 	}
 	
 	double[] getPostion(){
-		return pose;
+		return pose;	// Dangerous code
 	}
 	
 	double[] getVelocity(){
