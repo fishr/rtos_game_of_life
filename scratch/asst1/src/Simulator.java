@@ -45,7 +45,7 @@ public class Simulator {
 		while(this.sec<100){
 			this.vehicle.controlVehicle(this.getControl(this.sec, this.msec));
 			this.vehicle.updateState(this.sec, this.msec);
-			double[] pose = this.vehicle.getPostion();
+			double[] pose = this.vehicle.getPosition();
 			System.out.format("%.2f %.2f %.2f %.1f%n", this.sec+this.msec/1000.0, pose[0], pose[1], pose[2]*180.0/Math.PI);
 			msec+=10;
 			if(this.msec==1000){

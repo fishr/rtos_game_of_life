@@ -31,8 +31,8 @@ public class GroundVehicle {
 		this.speeds[1]=omega;
 	}
 	
-	double[] getPostion(){
-		return pose;
+	double[] getPosition(){
+		return pose.clone();
 	}
 	
 	double[] getVelocity(){
@@ -101,19 +101,31 @@ public class GroundVehicle {
 		double s = this.speeds[0];
 		double omega = this.speeds[1];
 		
+		double[] inPose = getPosition();
+		double[] returnPose = new double[3];
+		
 		if(Math.abs(omega)<=(s*2*Math.PI/Double.MAX_VALUE)){
-			//TODO straight line case
+			double dist = s*sec+s*msec/1000.0;
+			returnPose[0] = inPose[0] + Math.sin(inPose[2])*dist;
+			returnPose[1] = inPose[1] + Math.cos(inPose[2])*dist;
+			returnPose[2] = inPose[2];
 		}else{
 			double timePerCycle = 2*Math.PI/omega;
 			double circumference = s*timePerCycle;  //may be up to MAX_VAL
-			//double dist = (s*sec+s*msec/1000.0)%circumference;
 			double arc = (omega*sec+omega*msec/1000.0)%(2*Math.PI);
 			double radius = circumference/(2*Math.PI); 
-			double dx = Math.cos(this.pose[2]+Math.PI*Math.signum(radius))*radius;  //these values may get large enough
-			double dy = Math.sin(this.pose[2]+Math.PI*Math.signum(radius))*radius;  //that they no longer work as deltas
-																					//may consider broadening "straight line"
 			
-			//TODO: the whole thing
+			double dx = Math.cos(inPose[2]+Math.PI*Math.signum(radius)/2.0)*radius;  //these values may get large enough
+			double dy = Math.sin(inPose[2]+Math.PI*Math.signum(radius)/2.0)*radius;  //that they no longer work as deltas
+																					//may consider broadening "straight line"
+			double center_x = inPose[0]+dx;
+			double center_y = inPose[1]+dy;
+			double end_ang = inPose[2]+arc-Math.PI/2.0;
+			
+			returnPose[0] = center_x+Math.cos(end_ang)*radius;
+			returnPose[1] = center_y+Math.sin(end_ang)*radius;
+			returnPose[2] += arc;
 		}
+		setPosition(returnPose);
 	}
 }
