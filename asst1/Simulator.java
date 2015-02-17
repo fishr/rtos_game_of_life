@@ -53,7 +53,7 @@ public class Simulator {
 		double straight_rate = side_length_remainder*100/straight_time;
 		
 		//System.out.format("%.2f for %d and theta %.2f for %d%n", turn_rate, half_turn, straight_rate, straight_time);
-		
+		bookmarks.clear();
 		for(int i = 0; i<sides; i++){
 			long offset_t = 2*i*half_turn+i*straight_time;
 			assert(half_turn>0);
