@@ -45,7 +45,51 @@
 	\item 20 seconds via Google
 \end{enumerate}
 
-\setcounter{section}{5}
+\setcounter{section}{3}
+\section{Reqs and Unit Testing}
+\subsection{Faults in Assignment requirements}
+\begin{enumerate}
+	\item No outline of variables or state that gets referenced in method description
+	\item Requirements are not numbered, harder to trace to tests
+	\item Requirements are not always written in a specifically testable manner, and use should poorly
+\end{enumerate}
+\subsection{Specific failings}
+\begin{enumerate}
+	\item The specification of the output of the program is a should statement, something like output format needs to be determined with a shall statement.
+	\item The simulator class clock is not well defined in terms of purpose or format.
+	\item No description is given for how to deal with failure to provide valid inputs e.g. to the GroundVehicle constructor.
+\end{enumerate}
+\subsection{GroundVehicle reqs}
+TODO
+\subsection{List of Unit Tests}
+\subsubsection{Test needed}
+\begin{enumerate}
+	\item Control constructor
+	\item GroundVehicle constructor
+	\item setPosition
+	\item setVelocity
+	\item controlVehicle
+	\item updateState
+	\item getControl
+	\item setNumSides
+	\item main
+\end{enumerate}
+\subsubsection{No Tests needed}
+\begin{enumerate}
+	\item getSpeed - simple getter
+	\item getRotVel - simple getter
+	\item getPosition - simple getter
+	\item getVelocity - simple getter
+	\item getCurrentSec - simple getter
+	\item getCurrentMSec - simple getter
+	\item run
+\end{enumerate}
+\subsubsection{Equivalence Classes}
+\begin{enumerate}
+	\item First arg greater than bounds, less than bounds, within bounds, again for second arg
+	\item 
+\end{enumerate}
+
 \section{Code control}
 \subsection{Subversion Log}
 \begin{enumerate}

@@ -1,13 +1,13 @@
 public class GroundVehicle {
 	
-	private final double MIN_X = 0;
-	private final double MAX_X = 100;
-	private final double MIN_Y = 0;
-	private final double MAX_Y = 100;
-	public final double MIN_S_DOT = 5;
-	public final double MAX_S_DOT = 10;
-	public final double MIN_THETA_DOT = -Math.PI/4.0;
-	public final double MAX_THETA_DOT = Math.PI/4.0;
+	private final static double MIN_X = 0;
+	private final static double MAX_X = 100;
+	private final static double MIN_Y = 0;
+	private final static double MAX_Y = 100;
+	public final static double MIN_S_DOT = 5;
+	public final static double MAX_S_DOT = 10;
+	public final static double MIN_THETA_DOT = -Math.PI/4.0;
+	public final static double MAX_THETA_DOT = Math.PI/4.0;
 
 	private double[] speeds;
 	private double[] pose;

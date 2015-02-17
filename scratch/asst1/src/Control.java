@@ -4,11 +4,9 @@ public class Control {
 	private double omega;
 	
 	public Control(double s, double omega){
-		assert((s>=5)&&(s<=10));
-		this.s = s;
+		this.s = util.clampDouble(s, GroundVehicle.MIN_S_DOT, GroundVehicle.MAX_S_DOT);;
 		
-		assert((omega>=-Math.PI)&&(omega<=Math.PI));
-		this.omega=omega;
+		this.omega=util.clampDouble(omega, GroundVehicle.MIN_THETA_DOT, GroundVehicle.MAX_THETA_DOT);
 	}
 	
 	double getSpeed(){
