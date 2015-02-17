@@ -14,12 +14,13 @@ public class Simulator {
 	private final int SIM_STEP = 10;
 	
 	public Simulator(){
-		double[] temp = {25,25,0};
+		double[] temp = {75,25,0};
 		this.vehicle = new GroundVehicle(temp, 5, 0);
 		
 		this.sec=0;
 		this.msec=0;
 		bookmarks = new Hashtable<Long, Control>();
+		bookmarks.clear();
 		this.sides=5;
 		this.setNumSides(5);
 	}
@@ -33,7 +34,7 @@ public class Simulator {
 	}
 	
 	Control getControl(int sec, int msec){
-		return bookmarks.get(((long)(sec*1000+msec))%this.loop_time);
+		return bookmarks.get(((long)(sec*100+msec/10))%this.loop_time);
 	}
 	
 	int setNumSides(int n){
@@ -57,9 +58,9 @@ public class Simulator {
 			long offset_t = 2*i*half_turn+i*straight_time;
 			assert(half_turn>0);
 			assert(straight_time>0);
-			bookmarks.put(offset_t*10, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
-			bookmarks.put((offset_t+half_turn)*10, new Control(straight_rate, 0));
-			bookmarks.put((offset_t+half_turn+straight_time)*10, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
+			bookmarks.put(offset_t, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
+			bookmarks.put((offset_t+half_turn), new Control(straight_rate, 0));
+			bookmarks.put((offset_t+half_turn+straight_time), new Control(GroundVehicle.MIN_S_DOT, turn_rate));
 		}
 		
 		this.loop_time = sides*(2*half_turn+straight_time);
@@ -89,9 +90,9 @@ public class Simulator {
 	
 	public static void main(String argv[]){
 		Simulator sim = new Simulator();
-		if(argv.length >1){
+		if(argv.length >0){
 			try{
-				sim.setNumSides(Integer.parseInt(argv[1]));
+				sim.setNumSides(Integer.parseInt(argv[0]));
 			}
 			catch(NumberFormatException e){
 				System.out.println("input invalid");
