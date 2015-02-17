@@ -33,7 +33,7 @@ public class Simulator {
 	}
 	
 	Control getControl(int sec, int msec){
-		return bookmarks.get(((long)(sec*100+msec/10))%this.loop_time);
+		return bookmarks.get(((long)(sec*1000+msec))%this.loop_time);
 	}
 	
 	int setNumSides(int n){
@@ -57,9 +57,9 @@ public class Simulator {
 			long offset_t = 2*i*half_turn+i*straight_time;
 			assert(half_turn>0);
 			assert(straight_time>0);
-			bookmarks.put(offset_t, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
-			bookmarks.put(offset_t+half_turn, new Control(straight_rate, 0));
-			bookmarks.put(offset_t+half_turn+straight_time, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
+			bookmarks.put(offset_t*10, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
+			bookmarks.put((offset_t+half_turn)*10, new Control(straight_rate, 0));
+			bookmarks.put((offset_t+half_turn+straight_time)*10, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
 		}
 		
 		this.loop_time = sides*(2*half_turn+straight_time);
@@ -76,7 +76,7 @@ public class Simulator {
 			this.vehicle.controlVehicle(this.getControl(this.sec, this.msec));
 			this.vehicle.updateState(0, SIM_STEP);
 			double[] pose = this.vehicle.getPosition();
-			System.out.format("%.2f %.2f %.2f %.1f %.2f %.2f%n", this.sec+this.msec/1000.0, pose[0], pose[1], pose[2]*180.0/Math.PI, this.vehicle.getRawVelocity()[0], this.vehicle.getRawVelocity()[1]);
+			System.out.format("%.2f %.2f %.2f %.1f%n", this.sec+this.msec/1000.0, pose[0], pose[1], pose[2]*180.0/Math.PI);
 			msec+=SIM_STEP;
 			if(this.msec==1000){
 				this.msec=0;
