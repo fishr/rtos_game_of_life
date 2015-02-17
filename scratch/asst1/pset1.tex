@@ -65,9 +65,11 @@ TODO
 \subsubsection{Test needed}
 \begin{enumerate}
 	\item Control constructor
-	\item GroundVehicle constructor
-	\item setPosition
+	\item my util.clampDouble method
+	\item my util.clampInt method
+	\item my util.wrapAngle method
 	\item setVelocity
+	\item getVelocity
 	\item controlVehicle
 	\item updateState
 	\item getControl
@@ -79,9 +81,10 @@ TODO
 	\item getSpeed - simple getter
 	\item getRotVel - simple getter
 	\item getPosition - simple getter
-	\item getVelocity - simple getter
 	\item getCurrentSec - simple getter
 	\item getCurrentMSec - simple getter
+	\item setPosition - relies on clamp and wrap 
+	\item GroundVehicle constructor - relies on setPosition and controlVehicle
 	\item run
 \end{enumerate}
 \subsubsection{Equivalence Classes}
