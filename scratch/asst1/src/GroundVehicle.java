@@ -4,10 +4,10 @@ public class GroundVehicle {
 	private final double MAX_X = 100;
 	private final double MIN_Y = 0;
 	private final double MAX_Y = 100;
-	private final double MIN_S_DOT = 5;
-	private final double MAX_S_DOT = 10;
-	private final double MIN_THETA_DOT = -Math.PI/4.0;
-	private final double MAX_THETA_DOT = Math.PI/4.0;
+	public final double MIN_S_DOT = 5;
+	public final double MAX_S_DOT = 10;
+	public final double MIN_THETA_DOT = -Math.PI/4.0;
+	public final double MAX_THETA_DOT = Math.PI/4.0;
 
 	private double[] speeds;
 	private double[] pose;
@@ -78,7 +78,9 @@ public class GroundVehicle {
 	}
 	
 	void controlVehicle(Control c){
-		assert c!=null : "Control is null";
+		if(c==null){
+			return;
+		}
 		
 		if(!util.withinBounds(c.getSpeed(), MIN_S_DOT, MAX_S_DOT)){
 			if(c.getSpeed()>MAX_S_DOT){
@@ -106,8 +108,8 @@ public class GroundVehicle {
 		
 		if(Math.abs(omega)<=(s*2*Math.PI/Double.MAX_VALUE)){
 			double dist = s*sec+s*msec/1000.0;
-			returnPose[0] = inPose[0] + Math.sin(inPose[2])*dist;
-			returnPose[1] = inPose[1] + Math.cos(inPose[2])*dist;
+			returnPose[0] = inPose[0] + Math.cos(inPose[2])*dist;
+			returnPose[1] = inPose[1] + Math.sin(inPose[2])*dist;
 			returnPose[2] = inPose[2];
 		}else{
 			double timePerCycle = 2*Math.PI/omega;
