@@ -34,7 +34,7 @@ public class Simulator {
 	}
 	
 	Control getControl(int sec, int msec){
-		return bookmarks.get(((long)(sec*100+msec/10))%this.loop_time);
+		return bookmarks.get(((long)(sec*1000+msec))%this.loop_time);
 	}
 	
 	int setNumSides(int n){
@@ -58,12 +58,12 @@ public class Simulator {
 			long offset_t = 2*i*half_turn+i*straight_time;
 			assert(half_turn>0);
 			assert(straight_time>0);
-			bookmarks.put(offset_t, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
-			bookmarks.put((offset_t+half_turn), new Control(straight_rate, 0));
-			bookmarks.put((offset_t+half_turn+straight_time), new Control(GroundVehicle.MIN_S_DOT, turn_rate));
+			bookmarks.put(offset_t*10, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
+			bookmarks.put((offset_t+half_turn)*10, new Control(straight_rate, 0));
+			bookmarks.put((offset_t+half_turn+straight_time)*10, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
 		}
 		
-		this.loop_time = sides*(2*half_turn+straight_time);
+		this.loop_time = sides*(2*half_turn+straight_time)*10;
 		
 		return sides;
 	}
