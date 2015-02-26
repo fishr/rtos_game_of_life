@@ -111,11 +111,15 @@
 \begin{enumerate}
 	\item Each \verb|GroundVehicle| is shared between threads
 	\item The time is controlled from \verb|Simulator|, but read from many.
-	\item The \verb|Vehicle| position is controlled from one thread, but read from many.
+	\item The \verb|GroundVehicle| position is controlled from one thread, but read from many.
+	\item The status variable indicating all \verb|VehicleControllers| have completed needs to be read and written by many.
 \end{enumerate}
 \subsection{Critical Regions}
 \begin{enumerate}
-	\item 
+	\item Modifying the state of the \verb|GroundVehicle|, as in, changing velocity or position, should be done from one and only one thread at a time.
+	\item Modifying time must be an atomic operation, so listening threads never read a partially updated variable.
+	\item The position output to the client is managed by one thread, but many threads have updated positions.  Changing the pose of a vehicle must be atomic, and the output to the client shall be managed by a single thread, using a buffer that has atomic write operations.
+	\item Incrementing the status variable to indicate thread cycle completion shall be an atomic operation, as well as locking, to protect from READ-READ-MODIFY-WRITE-MODIFY-WRITE style errors.
 \end{enumerate}
 
 
