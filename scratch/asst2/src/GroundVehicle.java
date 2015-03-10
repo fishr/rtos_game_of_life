@@ -11,6 +11,11 @@ public class GroundVehicle {
 
 	private double[] speeds;
 	private double[] pose;
+	
+	private int sec=0;
+	private int usec=0;
+	
+	private boolean moved=true;
 
 	public GroundVehicle(double[] pose, double s, double omega) {
 		this.pose = new double[3];
@@ -21,13 +26,11 @@ public class GroundVehicle {
 		this.controlVehicle(start);
 	}
 
-	double[] getPosition() {
-		//TODO
+	synchronized double[] getPosition() {
 		return pose.clone();
 	}
 
-	double[] getVelocity() {
-		//TODO
+	synchronized double[] getVelocity() {
 		double[] temp = new double[3];
 		temp[0] = speeds[0] * Math.cos(pose[2]);
 		temp[1] = speeds[0] * Math.sin(pose[2]);
@@ -35,22 +38,36 @@ public class GroundVehicle {
 		return temp;
 	}
 
-	double[] getRawVelocity() {
-		//TODO
+	synchronized double[] getRawVelocity() {
 		return speeds.clone();
 	}
 
-	void setPosition(double[] pose) {
-		//TODO
+	synchronized void setPosition(double[] pose) {
 		assert (pose.length == 3);
 
 		this.pose[0] = util.clampDouble(pose[0], MIN_X, MAX_X);
 		this.pose[1] = util.clampDouble(pose[1], MIN_Y, MAX_Y);
 		this.pose[2] = util.wrapAngle(pose[2]);
 	}
+	
+	synchronized void controlVehicle(Control c){
+		/*while(!moved){
+			try{
+				wait();
+			}catch(InterruptedException e){
+				Thread.currentThread().interrupt();
+			}
+		}*/
+		if(c!=null){
+		
+		this.speeds[0]=c.getSpeed();
+		this.speeds[1]=c.getRotVel();
+		}
+		moved=false;
+		notifyAll();
+	}
 
-	void setVelocity(double[] vels) {
-		//TODO
+	synchronized void setVelocity(double[] vels) {
 		assert (vels.length == 3);
 
 		this.speeds[1] = util
@@ -90,9 +107,27 @@ public class GroundVehicle {
 		controlVehicle(c);
 	}
 
-	void updateState(int sec, int msec) {
-		assert (sec >= 0);
-		assert (msec >= 0);
+	
+	/**
+	 * Updates the vehicle state variables based on the time
+	 * as specified by the passed params
+	 * 
+	 * @param sec the integer number of seconds that have elapsed since the start of the simulation
+	 * @param usec the integer number of microseconds that have elapsed since the second given in the previous parameter
+	 */
+	synchronized void updateState(int sec, int usec) {
+		int dsec = sec-this.sec;
+		int dusec = usec-this.usec;
+				
+		assert (dsec >= 0);
+		assert(Math.abs(dusec)<1000001);
+		
+		while(moved){
+			try{
+				wait();
+			}catch(InterruptedException e){}
+		}
+		
 		// FOR PHYSICS ENGINE: THE ROTATIONAL VELOCITY GIVES A DURATION UNTIL A
 		// FULL CIRCLE IS MADE
 		// USE THIS DURATION PLUS THE TRANSLATIONAL VELOCITY MAGNITUDE TO
@@ -106,14 +141,14 @@ public class GroundVehicle {
 		double[] returnPose = new double[3];
 
 		if (Math.abs(omega) <= (s * 2 * Math.PI / Double.MAX_VALUE)) {
-			double dist = s * sec + s * msec / 1000.0;
+			double dist = s * dsec + s * (dusec / 1000000.0);
 			returnPose[0] = inPose[0] + Math.cos(inPose[2]) * dist;
 			returnPose[1] = inPose[1] + Math.sin(inPose[2]) * dist;
 			returnPose[2] = inPose[2];
 		} else {
 			double timePerCycle = 2 * Math.PI / omega;
 			double circumference = s * timePerCycle; // may be up to MAX_VAL
-			double arc = (omega * sec + omega * msec / 1000.0) % (2 * Math.PI);
+			double arc = (omega * dsec + omega * dusec / 1000000.0) % (2 * Math.PI);
 			double radius = circumference / (2 * Math.PI);
 
 			double dx = Math.cos(inPose[2] + Math.PI * Math.signum(radius)
@@ -132,5 +167,6 @@ public class GroundVehicle {
 			returnPose[2] = inPose[2] + arc;
 		}
 		setPosition(returnPose);
+		moved=true;
 	}
 }

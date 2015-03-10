@@ -1,62 +1,82 @@
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 
 public class Simulator {
 	
-	private GroundVehicle vehicle;
-	private int sec;
-	private int msec;
-	private int sides;
-	private long loop_time;
-	private Hashtable<Long, Control> bookmarks;  //stores controls keyed by the hundreths of seconds
+	private HashSet<VehicleController> vehicles;
+	private Clock clk;
+    Hashtable<Integer, Keyframe> schedules;
 	
-	private final int MIN_SIDES = 3;
-	private final int MAX_SIDES = 10;
-	private final int SIM_STEP = 10;
+	private final int SIM_STEP = 100;
+	private DisplayClient dc;
 	
 	public Simulator(){
-		double[] temp = {75,25,0};
-		this.vehicle = new GroundVehicle(temp, 5, 0);
+		//this.vehicle = new GroundVehicle(temp, 5, 0);
+		vehicles = new HashSet<VehicleController>();
 		
-		this.sec=0;
-		this.msec=0;
-		bookmarks = new Hashtable<Long, Control>();
-		bookmarks.clear();
-		this.sides=5;
-		this.setNumSides(5);
-	}
-	
-	int getCurrentSec(){
-		//TODO
-		return this.sec;
-	}
-	
-	int getCurrentMSec(){
-		//TODO
-		return this.msec;
+		this.clk = new Clock(0,0, this.SIM_STEP);
+		schedules = new Hashtable<Integer, Keyframe>();
 	}
 	
 	public void addGroundVehicle(GroundVehicle gv){
-		//TODO
+		//have a tally of the number of vehicle objects
+		//increment upon adding vehicle
+		//on start, load tally value into new counter
+		//when each vehicle receives the time update,
+		//it will decrement the counter to show that 
+		//control has been calculated
+		
+		VehicleController vc = new VehicleController(this, gv);
+		this.vehicles.add(vc);
+		
+		this.clk.incUsers();
+	}
+	
+	public Clock.Timestamp getTime(int sec, int usec){
+		return this.clk.getTime(sec, usec);
 	}
 	
 	void run(){
-		this.sec = 0;
-		this.msec = 0;
+		Clock.Timestamp time = this.clk.getTime();
+		List<Double> gvX = new ArrayList<Double>();
+		List<Double> gvY = new ArrayList<Double>();
+		List<Double> gvTheta = new ArrayList<Double>();
 		
-		//TODO
-		/*
-		while(this.sec<100){
-			this.vehicle.controlVehicle(this.getControl(this.sec, this.msec));
-			this.vehicle.updateState(0, SIM_STEP);
-			double[] pose = this.vehicle.getPosition();
-			System.out.format("%.2f %.2f %.2f %.1f%n", this.sec+this.msec/1000.0, pose[0], pose[1], pose[2]*180.0/Math.PI);
-			msec+=SIM_STEP;
-			if(this.msec==1000){
-				this.msec=0;
-				this.sec+=1;
+		while(time.sec<100){
+			int vehicle_num = 0;
+			
+			gvX.clear();
+			gvY.clear();
+			gvTheta.clear();
+			
+			for(VehicleController vc : this.vehicles){
+				vehicle_num++;
+				vc.GroundVehicleUpdate(time);
+				
+				double[] pose = vc.getPosition();
+				//System.out.format("%.2f %.2f %.2f %.1f%n", time.sec+time.usec/1000000.0, pose[0], pose[1], pose[2]*180.0/Math.PI);
+				gvX.add(pose[0]);
+				gvY.add(pose[1]);
+				gvTheta.add(pose[2]*180.0/Math.PI);
 			}
+			double[] gvx = new double[vehicle_num];
+			double[] gvy = new double[vehicle_num];
+			double[] gvtheta = new double[vehicle_num];
+			for(int i = 0; i<vehicle_num; i++){
+				gvx[i] = gvX.get(i);
+				gvy[i] = gvY.get(i);
+				gvtheta[i] = gvTheta.get(i);
+			}
+			
+			dc.update(vehicle_num, gvx, gvy, gvtheta);
+
+			this.clk.incClock();
+			//call update states
+			time = this.clk.getTime();
+			Thread.yield();
 		}
-		*/
 		
 		//System.out.println("finished sim, exiting...");
 	}
@@ -65,15 +85,27 @@ public class Simulator {
 		Simulator sim = new Simulator();
 		if(argv.length >0){
 			try{
-				//TODO
-				//sim.setNumSides(Integer.parseInt(argv[0]));
+				sim.dc = new DisplayClient(argv[0]);
+				
+				if(argv.length>1){
+					double[] temp = {75,25,0};
+					for(int i =0; i<Integer.parseInt(argv[1]); i++){
+						GroundVehicle gv = new GroundVehicle(temp, 5, 0);
+						sim.addGroundVehicle(gv);
+					}
+				}
 			}
 			catch(NumberFormatException e){
 				System.out.println("input invalid");
 			}
 		}
+		
+		for(VehicleController v : sim.vehicles){
+			v.start();
+		}
+		
 		sim.run();
-		//TODO
+		
 		System.exit(0);
 	}
 }
