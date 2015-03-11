@@ -3,11 +3,11 @@ import java.util.Hashtable;
 
 public class VehicleController extends Thread {
 
-	private GroundVehicle v;
-	private Simulator sim;
+	GroundVehicle v;
+	Simulator sim;
 	
-	private int sides = 5;
-	private Keyframe bookmarks;
+	int sides = 5;
+	Keyframe bookmarks;
 	
 	public static final int MIN_SIDES = 3;
 	public static final int MAX_SIDES = 10;
@@ -15,13 +15,17 @@ public class VehicleController extends Thread {
 	public static final double BOUND_DIAM = 50.0;
 	public static final int BASE_TIME = Simulator.SIM_UNITS/Simulator.SIM_STEP;
 	
-	private int sec = -1;
-	private int usec = -1;
+	int sec = -1;
+	int usec = -1;
 	
 	public VehicleController(Simulator s, GroundVehicle v){
 		this.sim = s;
 		this.v = v;
 		
+		constructionTasks();
+	}
+	
+	void constructionTasks(){
 		setNumSides(DEFAULT_SIDES);
 	}
 	

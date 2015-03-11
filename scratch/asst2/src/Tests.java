@@ -90,5 +90,15 @@ public class Tests {
 	
 	/* Simulator Tests */
 	
-	 
+	 @Test
+	 public void incClock(){
+		 Simulator sim = new Simulator();
+		 Timestamp expected = new Timestamp(0, Simulator.SIM_STEP);
+		 
+		 sim.incClock();
+		 Timestamp actual = sim.getTime();
+		 
+		 Assert.assertEquals(expected.sec, actual.sec);
+		 Assert.assertEquals(expected.usec, actual.usec);
+	 }
 }

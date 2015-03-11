@@ -10,9 +10,9 @@ public class Simulator {
 	private Clock clk;
     Hashtable<Integer, Keyframe> schedules;
 	
-	public static final int SIM_STEP = 100;
+	public static final int SIM_STEP = 10000;
 	public static final int SIM_UNITS = 1000000;
-	public static final int MAX_RUNTIME = 100;
+	public static final int MAX_RUNTIME = 30;
 	private DisplayClient dc;
 	
 	public Simulator(){
@@ -31,7 +31,14 @@ public class Simulator {
 		//it will decrement the counter to show that 
 		//control has been calculated
 		
-		VehicleController vc = new VehicleController(this, gv);
+		RandomController vc = new RandomController(this, gv);
+		this.vehicles.add(vc);
+		
+		this.clk.incUsers();
+	}
+	
+	public void addFollowVehicle(GroundVehicle gv, GroundVehicle leader){
+		FollowingController vc = new FollowingController(this, gv, leader);
 		this.vehicles.add(vc);
 		
 		this.clk.incUsers();
@@ -85,18 +92,31 @@ public class Simulator {
 		//System.out.println("finished sim, exiting...");
 	}
 	
+	void incClock(){
+		this.clk.incClock();
+	}
+	
+	Timestamp getTime(){
+		return this.clk.getTime();
+	}
+	
 	public static void main(String argv[]){
 		Simulator sim = new Simulator();
 		if(argv.length >0){
 			try{
 				sim.dc = new DisplayClient(argv[0]);
-				sim.dc.traceOff();
+				sim.dc.clear();
+				sim.dc.traceOn();
 				
 				if(argv.length>1){
-					double[] temp = {50,25,0};
+					double[] temp = {25,75,0};
 					for(int i =0; i<Integer.parseInt(argv[1]); i++){
 						GroundVehicle gv = new GroundVehicle(temp, 5, 0);
 						sim.addGroundVehicle(gv);
+						GroundVehicle gv2 = new GroundVehicle(temp, 5, 0);
+						sim.addFollowVehicle(gv2, gv);
+						GroundVehicle gv3 = new GroundVehicle(temp, 5, 0);
+						sim.addFollowVehicle(gv3, gv2);
 					}
 				}
 			}
