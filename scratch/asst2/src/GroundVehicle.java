@@ -15,7 +15,7 @@ public class GroundVehicle {
 	private int sec=0;
 	private int usec=0;
 	
-	private boolean moved=true;
+	private boolean moved;
 
 	public GroundVehicle(double[] pose, double s, double omega) {
 		this.pose = new double[3];
@@ -24,6 +24,7 @@ public class GroundVehicle {
 		this.speeds = new double[2];
 		Control start = new Control(s, omega);
 		this.controlVehicle(start);
+		moved = true;
 	}
 
 	synchronized double[] getPosition() {
@@ -50,18 +51,10 @@ public class GroundVehicle {
 		this.pose[2] = util.wrapAngle(pose[2]);
 	}
 	
-	synchronized void controlVehicle(Control c){
-		/*while(!moved){
-			try{
-				wait();
-			}catch(InterruptedException e){
-				Thread.currentThread().interrupt();
-			}
-		}*/
+	synchronized void controlVehicle(Control c){	
 		if(c!=null){
-		
-		this.speeds[0]=c.getSpeed();
-		this.speeds[1]=c.getRotVel();
+			this.speeds[0]=c.getSpeed();
+			this.speeds[1]=c.getRotVel();
 		}
 		moved=false;
 		notifyAll();
@@ -116,6 +109,7 @@ public class GroundVehicle {
 	 * @param usec the integer number of microseconds that have elapsed since the second given in the previous parameter
 	 */
 	synchronized void updateState(int sec, int usec) {
+		/*Conditional Critical Region*/
 		int dsec = sec-this.sec;
 		int dusec = usec-this.usec;
 				
@@ -166,6 +160,8 @@ public class GroundVehicle {
 			returnPose[1] = center_y + Math.sin(end_ang) * radius;
 			returnPose[2] = inPose[2] + arc;
 		}
+		this.sec = sec;
+		this.usec = usec;
 		setPosition(returnPose);
 		moved=true;
 	}

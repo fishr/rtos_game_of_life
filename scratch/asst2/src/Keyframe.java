@@ -17,7 +17,7 @@ public class Keyframe{
 		this.bookmarks.put(usecs, cont);
 	}
 
-	public synchronized Control get(Clock.Timestamp time){
+	public synchronized Control get(Timestamp time){
 		long usecs= time.sec*1000000+time.usec;
 		return this.bookmarks.get(usecs);
 	}

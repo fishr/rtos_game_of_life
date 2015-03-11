@@ -17,6 +17,7 @@ public class Clock {
 	}
 	
 	public synchronized Timestamp getTime(int sec, int usec){
+		/*Conditional Critical Region*/
 		while((sec==this.sec)&&(usec==this.usec)){
 			try{
 				wait();
@@ -36,6 +37,7 @@ public class Clock {
 	}
 	
 	public synchronized void incClock(){
+		/*Conditional Critical Region*/
 		while(this.not_updated>0){
 			try{
 				wait();
@@ -59,17 +61,5 @@ public class Clock {
 	
 	public synchronized void incUsers(){
 		this.users++;
-	}
-	
-	public class Timestamp{
-		
-		public final int sec;
-		public final int usec;
-		
-		public Timestamp(int sec, int usec){
-			this.sec=sec;
-			this.usec = usec;
-		}
-	}
-	
+	}	
 }

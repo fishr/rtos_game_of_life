@@ -1,3 +1,5 @@
+import java.util.Hashtable;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -5,6 +7,8 @@ import org.junit.runners.JUnit4;
 
 public class Tests {
 	@Test
+	
+	/* UTIL TESTS */
 	public void clamp(){
 		Assert.assertEquals(0.0, util.clampDouble(0.0, -1.0, 1.0), 0);
 		Assert.assertEquals(-1.0, util.clampDouble(-10.0, -1.0, 1.0), 0);
@@ -26,6 +30,8 @@ public class Tests {
 		Assert.assertEquals(-Math.PI, util.wrapAngle(Math.PI),0);
 	}
 	
+	/* CONTROL CLASS TESTS */
+	
 	@Test
 	public void Control(){
 		final double[] inputs = {0, -2, 7, 0, 20, 3};
@@ -39,33 +45,50 @@ public class Tests {
 		Assert.assertArrayEquals(expecteds, outputs, 0);
 	}
 	
+	/* VehicleController Tests */
+	
+	
 	@Test
-	public void controlVehicle(){
-		//TODO
+	public void setNumSides(){
+		double[] pose = {25, 25, 0};
+		GroundVehicle gv = new GroundVehicle(pose, 7, 0);
+		Simulator sim = new Simulator();
+		VehicleController cont = new VehicleController(sim, gv);
+		
+		Assert.assertTrue(sim.schedules.containsKey(5));
+		
+		cont.setNumSides(8);
+		Assert.assertTrue(sim.schedules.containsKey(8));
+		long zeroth = cont.getLoopTime();
+		
+		cont.setNumSides(10);
+		Assert.assertTrue(sim.schedules.containsKey(10));
+		long first = cont.getLoopTime();
+		Assert.assertNotEquals(zeroth,first);
+		
+		cont.setNumSides(11);
+		Assert.assertTrue(!sim.schedules.containsKey(11));
+		long second = cont.getLoopTime();
+		Assert.assertEquals(first,second);
 	}
 	
 	@Test
-	public void setPosition(){
-		//TODO
+	public void GroundVehicleUpdate(){
+		double[] pose = {25, 25, 0};
+		GroundVehicle gv = new GroundVehicle(pose, 10, 0);
+		Simulator sim = new Simulator();
+		VehicleController cont = new VehicleController(sim, gv);
+		
+		Timestamp time = new Timestamp(1, 0);
+		gv.controlVehicle(new Control(10, 0));
+		
+		cont.GroundVehicleUpdate(time);
+		double[] pose1 = {35, 25, 0};
+		
+		Assert.assertArrayEquals(pose1, gv.getPosition(), 0);
 	}
 	
-	@Test
-	public void getVelocity(){
-		//TODO
-	}
+	/* Simulator Tests */
 	
-	@Test
-	public void setVelocity(){
-		//TODO
-	}
-	
-	@Test
-	public void updateState(){
-		//TODO	
-	}
-	
-	@Test
-	public void getControl(){
-		//TODO
-	}
+	 
 }

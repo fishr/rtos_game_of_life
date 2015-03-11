@@ -12,9 +12,11 @@ public class VehicleController extends Thread {
 	public static final int MIN_SIDES = 3;
 	public static final int MAX_SIDES = 10;
 	public static final int DEFAULT_SIDES = 5;
+	public static final double BOUND_DIAM = 50.0;
+	public static final int BASE_TIME = Simulator.SIM_UNITS/Simulator.SIM_STEP;
 	
-	private int sec = 0;
-	private int usec = 0;
+	private int sec = -1;
+	private int usec = -1;
 	
 	public VehicleController(Simulator s, GroundVehicle v){
 		this.sim = s;
@@ -23,7 +25,7 @@ public class VehicleController extends Thread {
 		setNumSides(DEFAULT_SIDES);
 	}
 	
-	public void GroundVehicleUpdate(Clock.Timestamp time){
+	public void GroundVehicleUpdate(Timestamp time){
 		this.v.updateState(time.sec, time.usec);
 	}
 	
@@ -46,17 +48,17 @@ public class VehicleController extends Thread {
 				//else generate _completely_ locally and add to 
 				//schedule and release lock
 				
-				double dTheta = (Math.PI-((sides-2)*Math.PI/sides))/2;
-				long half_turn = Math.round(Math.ceil(dTheta*1000000.0/GroundVehicle.MAX_THETA_DOT));
-				double turn_rate = dTheta*1000000.0/half_turn;
-				double natural_side_length = 50.0*Math.sin(Math.PI/sides);
-				double arc_radius = half_turn*GroundVehicle.MIN_S_DOT/(dTheta*1000000.0);
+				double dTheta = (Math.PI-((this.sides-2)*Math.PI/this.sides))/2;
+				long half_turn = Math.round(Math.ceil(dTheta*BASE_TIME/GroundVehicle.MAX_THETA_DOT));
+				double turn_rate = dTheta*BASE_TIME/half_turn;
+				double natural_side_length = BOUND_DIAM*Math.sin(Math.PI/this.sides);
+				double arc_radius = half_turn*GroundVehicle.MIN_S_DOT/(dTheta*BASE_TIME);
 				double turn_length_offset = arc_radius*Math.sin(dTheta);
 				double side_length_remainder = natural_side_length - 2*turn_length_offset;
-				long straight_time = Math.round(Math.ceil(side_length_remainder*1000000.0/GroundVehicle.MAX_S_DOT));
-				double straight_rate = side_length_remainder*1000000.0/straight_time;
+				long straight_time = Math.round(Math.ceil(side_length_remainder*BASE_TIME/GroundVehicle.MAX_S_DOT));
+				double straight_rate = side_length_remainder*BASE_TIME/straight_time;
 				
-				long loop_time = sides*(2*half_turn+straight_time);
+				long loop_time = sides*(2*half_turn+straight_time)*Simulator.SIM_STEP;
 				Keyframe bookmarks = new Keyframe(loop_time);
 	
 				
@@ -65,9 +67,9 @@ public class VehicleController extends Thread {
 					long offset_t = 2*i*half_turn+i*straight_time;
 					assert(half_turn>0);
 					assert(straight_time>0);
-					bookmarks.put(offset_t*10, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
-					bookmarks.put((offset_t+half_turn)*10, new Control(straight_rate, 0));
-					bookmarks.put((offset_t+half_turn+straight_time)*10, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
+					bookmarks.put(offset_t*Simulator.SIM_STEP, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
+					bookmarks.put((offset_t+half_turn)*Simulator.SIM_STEP, new Control(straight_rate, 0));
+					bookmarks.put((offset_t+half_turn+straight_time)*Simulator.SIM_STEP, new Control(GroundVehicle.MIN_S_DOT, turn_rate));
 				}
 				
 				this.bookmarks = bookmarks;
@@ -78,15 +80,19 @@ public class VehicleController extends Thread {
 		return this.sides;
 	}
 	
-	public Control getControl(Clock.Timestamp time){
+	public Control getControl(Timestamp time){
 		long usecs= time.sec*1000000+time.usec;
 		return this.bookmarks.get(usecs%this.bookmarks.loop_time);
 	}
 	
+	public synchronized long getLoopTime(){
+		return this.bookmarks.loop_time;
+	}
+	
 	public void run(){
 		
-		while(this.sec<100){
-			Clock.Timestamp time = sim.getTime(this.sec, this.usec);
+		while(this.sec<Simulator.MAX_RUNTIME){
+			Timestamp time = sim.getTime(this.sec, this.usec);
 			v.controlVehicle(getControl(time));
 			this.sec = time.sec;
 			this.usec = time.usec;
