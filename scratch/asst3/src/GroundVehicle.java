@@ -61,8 +61,6 @@ public class GroundVehicle extends Thread{
 			this.speeds[0]=c.getSpeed();
 			this.speeds[1]=c.getRotVel();
 		}
-		moved=false;
-		notifyAll();
 	}
 
 	synchronized void setVelocity(double[] vels) {
@@ -106,7 +104,13 @@ public class GroundVehicle extends Thread{
 	}
 	
 	public void run(){
-		//TODO
+		while(this.sec<Simulator.MAX_RUNTIME){
+			Timestamp time = this.sim.getTime(this.sec, this.usec);
+			this.updateState(time.sec, time.usec);
+			this.sec = time.sec;
+			this.usec = time.usec;
+			Thread.yield();
+		}
 	}
 
 	
@@ -124,12 +128,6 @@ public class GroundVehicle extends Thread{
 				
 		assert (dsec >= 0);
 		assert(Math.abs(dusec)<1000001);
-		
-		while(moved){
-			try{
-				wait();
-			}catch(InterruptedException e){}
-		}
 		
 		// FOR PHYSICS ENGINE: THE ROTATIONAL VELOCITY GIVES A DURATION UNTIL A
 		// FULL CIRCLE IS MADE

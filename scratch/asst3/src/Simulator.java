@@ -10,8 +10,8 @@ public class Simulator extends Thread{
 	private Clock clk;
     Hashtable<Integer, Keyframe> schedules;
 	
-	public static final int SIM_STEP = 10000;
-	public static final int SIM_UNITS = 1000000;
+	public static final int SIM_STEP = 100;
+	public static final int SIM_UNITS = 1000;
 	public static final int MAX_RUNTIME = 30;
 	private DisplayClient dc;
 	

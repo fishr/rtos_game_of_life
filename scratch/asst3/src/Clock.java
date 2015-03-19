@@ -28,7 +28,7 @@ public class Clock {
 		Timestamp time = new Timestamp(this.sec, this.usec);
 		this.not_updated--;
 		assert(this.not_updated>=0);
-		notifyAll();
+		notify();
 		return time;
 	}
 	
@@ -47,7 +47,7 @@ public class Clock {
 		}
 		
 		this.usec+=this.step;
-		if(this.usec==1000000){
+		if(this.usec==Simulator.SIM_UNITS){
 			this.usec=0;
 			this.sec+=1;
 		}
