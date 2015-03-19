@@ -1,0 +1,36 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{graphicx}
+
+\title{16.35 PSet \#2}
+\author{Ryan Fish}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Predeliverables}
+\subsection{Test Case Rationale}
+
+TODO
+
+\subsection{No Noise, 5 Vehicles}
+
+TODO
+
+\subsection{Noise, 5 Vehicles}
+
+TODO
+
+\subsection{4 Conditions of Deadlock and You}
+
+\begin{enumerate}
+	\item[MutEx] We need to prevent reads occuring concurrently with writes to vehicle state.
+	\item[Hold and Wait] In particular, LeadingController may grab its own state and wait for a lock on the state of a vehicle it is leading.
+	\item[No Preemption]  Without modification, the default synchronization system of Java does not allow for preemption in acquistion of resources.
+	\item[Circular Wait]  A Leading Controller way wait on acquistion of the state of a Following controller, who is waiting to acquire the state of the same LeadingController.
+\subsection{Proposal for Avoiding Deadlock} 
+
+TODO
+
+\end{document}

@@ -164,7 +164,7 @@ public class GroundVehicle extends Thread{
 			double end_ang = inPose[2] + arc - Math.PI / 2.0;
 
 			double errd = 10*Math.random();
-			double eerc = 20*Math.random();
+			double errc = 20*Math.random();
 
 			returnPose[0] = center_x + Math.cos(end_ang) * radius + errd*Math.cos(end_ang)-errc*Math.sin(end_ang);
 			returnPose[1] = center_y + Math.sin(end_ang) * radius + errd*Math.sin(end_ang)+errc*Math.sin(end_ang);
