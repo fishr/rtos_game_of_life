@@ -163,8 +163,11 @@ public class GroundVehicle extends Thread{
 			double center_y = inPose[1] + dy;
 			double end_ang = inPose[2] + arc - Math.PI / 2.0;
 
-			returnPose[0] = center_x + Math.cos(end_ang) * radius;
-			returnPose[1] = center_y + Math.sin(end_ang) * radius;
+			double errd = 10*Math.random();
+			double eerc = 20*Math.random();
+
+			returnPose[0] = center_x + Math.cos(end_ang) * radius + errd*Math.cos(end_ang)-errc*Math.sin(end_ang);
+			returnPose[1] = center_y + Math.sin(end_ang) * radius + errd*Math.sin(end_ang)+errc*Math.sin(end_ang);
 			returnPose[2] = inPose[2] + arc;
 		}
 		this.sec = sec;

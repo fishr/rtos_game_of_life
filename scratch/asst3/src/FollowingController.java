@@ -1,4 +1,3 @@
-
 public class FollowingController extends VehicleController {
 
 	GroundVehicle leader;
