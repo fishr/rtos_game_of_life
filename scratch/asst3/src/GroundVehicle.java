@@ -16,10 +16,15 @@ public class GroundVehicle extends Thread{
 	private int usec=0;
 	
 	private boolean moved;
+	private boolean noise;
 	
 	private Simulator sim;
 
-	public GroundVehicle(double[] pose, double s, double omega, Simulator sim) {
+	public GroundVehicle(double[] pose, double s, double omega, Simulator sim){
+		this(pose, s, omega, sim, false); 
+	}
+	
+	public GroundVehicle(double[] pose, double s, double omega, Simulator sim, boolean random) {
 		this.sim = sim;
 		this.pose = new double[3];
 		this.setPosition(pose.clone());
@@ -27,7 +32,8 @@ public class GroundVehicle extends Thread{
 		this.speeds = new double[2];
 		Control start = new Control(s, omega);
 		this.controlVehicle(start);
-		moved = true;
+		this.moved = true;
+		this.noise = random;
 		
 		this.sim.incUsers();
 	}
@@ -163,8 +169,12 @@ public class GroundVehicle extends Thread{
 			double center_y = inPose[1] + dy;
 			double end_ang = inPose[2] + arc - Math.PI / 2.0;
 
-			double errd = 1*Math.random()*(dsec+dusec/Simulator.SIM_UNITS);
-			double errc = 2*Math.random()*(dsec+dusec/Simulator.SIM_UNITS);
+			double errd = 0;
+			double errc = 0;
+			if(this.noise){
+				errd = 1*Math.random()*(dsec+dusec/Simulator.SIM_UNITS);
+				errc = 2*Math.random()*(dsec+dusec/Simulator.SIM_UNITS);
+			}
 
 			returnPose[0] = center_x + Math.cos(end_ang) * radius + errd*Math.cos(end_ang)-errc*Math.sin(end_ang);
 			returnPose[1] = center_y + Math.sin(end_ang) * radius + errd*Math.sin(end_ang)+errc*Math.sin(end_ang);

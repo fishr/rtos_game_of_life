@@ -36,6 +36,10 @@ public class Clock {
 		return new Timestamp(this.sec, this.usec);
 	}
 	
+	public synchronized int getCount(){
+		return this.not_updated;
+	}
+	
 	public synchronized void incClock(){
 		/*Conditional Critical Region*/
 		while(this.not_updated>0){
@@ -55,7 +59,7 @@ public class Clock {
 		notifyAll();
 	}
 	
-	private synchronized int getUsers(){
+	synchronized int getUsers(){
 		return this.users;
 	}
 	

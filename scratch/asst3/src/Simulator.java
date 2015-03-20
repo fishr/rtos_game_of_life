@@ -95,6 +95,14 @@ public class Simulator extends Thread{
 		//System.out.println("finished sim, exiting...");
 	}
 	
+	public int getCount(){
+		return this.clk.getCount();
+	}
+	
+	public int getUsers(){
+		return this.clk.getUsers();
+	}
+	
 	void incClock(){
 		this.clk.incClock();
 	}
@@ -116,12 +124,12 @@ public class Simulator extends Thread{
 					if(arg1>0){
 						double[] temp = {50, 25, 0};
 						//double[] temp = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
-						GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim);
+						GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, true);
 						sim.addGroundVehicle(gv);
 						arg1--;
 						for(int i =0; i<arg1; i++){
 							double[] temp1 = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
-							GroundVehicle gv2 = new GroundVehicle(temp1, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim);
+							GroundVehicle gv2 = new GroundVehicle(temp1, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, true);
 							sim.addFollowVehicle(gv2, gv);
 						}
 					}else{

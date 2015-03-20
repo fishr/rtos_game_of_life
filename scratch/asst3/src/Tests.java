@@ -48,7 +48,6 @@ public class Tests {
 	
 	/* VehicleController Tests */
 	
-	
 	@Test
 	public void setNumSides(){
 		double[] pose = {25, 25, 0};
@@ -91,18 +90,53 @@ public class Tests {
 		Assert.assertNull(cont3);
 	}
 	
+	@Test
+	public void getRandomControl(){
+		double[] pose = {25, 25, 0};
+		Simulator sim = new Simulator();
+		GroundVehicle gv = new GroundVehicle(pose, 7, 0, sim);
+		RandomController cont = new RandomController(sim, gv);
+		
+		Control contr = cont.getControl(new Timestamp(0,0));
+		Assert.assertTrue(Double.isFinite(contr.getSpeed()));
+		
+	}
+	
 	/* Simulator Tests */
 	
 	 @Test
 	 public void incClock(){
 		 Simulator sim = new Simulator();
 		 Timestamp expected = new Timestamp(0, Simulator.SIM_STEP);
+		 Assert.assertEquals(0, sim.getCount());
+		 Assert.assertEquals(0, sim.getUsers());
 		 
 		 sim.incClock();
 		 Timestamp actual = sim.getTime();
 		 
+		 Assert.assertEquals(0, sim.getCount());
+		 Assert.assertEquals(0, sim.getUsers());
+		 
 		 Assert.assertEquals(expected.sec, actual.sec);
 		 Assert.assertEquals(expected.usec, actual.usec);
+		 
+		 double[] pose = {25,50,0};
+		 GroundVehicle gv = new GroundVehicle(pose, 7, 0, sim);
+		 sim.addGroundVehicle(gv);
+		 
+		 Assert.assertEquals(0, sim.getCount());
+		 Assert.assertEquals(2, sim.getUsers());
+		 
+		 sim.incClock();
+		 
+		 Assert.assertEquals(2, sim.getCount());
+		 Assert.assertEquals(2, sim.getUsers());
+		 
+		 sim.getTime(0, 0);
+		 sim.getTime(0, 0);
+		 
+		 Assert.assertEquals(0, sim.getCount());
+		 Assert.assertEquals(2, sim.getUsers());
 	 }
 	 
 	 /* Ground Vehicle */
@@ -246,4 +280,5 @@ public class Tests {
 		final double[] postpose7 = {57.0, 50.0, 0.0};
 		Assert.assertArrayEquals(postpose7, testVehicle.getPosition(), 1E-15);
 	}
+
 }

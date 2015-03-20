@@ -12,7 +12,7 @@
 \section{Predeliverables}
 \subsection{Test Case Rationale}
 
-TODO
+My addVehicle method simply adds a reference to the vehicle to a list of all vehicles so that it's state can be gathered later by the Simulator.  The important stuff happens upon construction of the vehicle and controller, where it adds itself to the set of threads that must run in lockstep with the time incrementation.  Since the predeliverable implementation is just wait for time, set speeds and update positions, I just check to make sure that adding a vehicle or controller increments the count, that getting the time decrements the count, and incrementing the time resets the count.
 
 \subsection{No Noise, 5 Vehicles}
 
