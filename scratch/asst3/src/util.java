@@ -12,11 +12,14 @@ public class util {
 	}
 
 	public static double wrapAngle(double d) {
+		assert(Double.isFinite(d));
 		double tempTheta = (d%(2*Math.PI));
 		if(tempTheta>=Math.PI){
 			tempTheta=tempTheta-(2*Math.PI);
+		}else if(tempTheta<-Math.PI){
+			tempTheta=tempTheta+(2*Math.PI);
 		}
-		assert((tempTheta>=-Math.PI)&&(tempTheta<Math.PI));
+		assert((tempTheta>=-Math.PI)&&(tempTheta<Math.PI)):Double.toString(tempTheta);
 		return tempTheta;
 	}
 	

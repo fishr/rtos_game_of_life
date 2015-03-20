@@ -28,7 +28,7 @@ public class Clock {
 		Timestamp time = new Timestamp(this.sec, this.usec);
 		this.not_updated--;
 		assert(this.not_updated>=0);
-		notify();
+		notifyAll();
 		return time;
 	}
 	

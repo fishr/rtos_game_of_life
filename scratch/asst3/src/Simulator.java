@@ -10,9 +10,9 @@ public class Simulator extends Thread{
 	private Clock clk;
     Hashtable<Integer, Keyframe> schedules;
 	
-	public static final int SIM_STEP = 100;
+	public static final int SIM_STEP = 10;
 	public static final int SIM_UNITS = 1000;
-	public static final int MAX_RUNTIME = 30;
+	public static final int MAX_RUNTIME = 100;
 	private DisplayClient dc;
 	
 	public Simulator(){
@@ -35,6 +35,11 @@ public class Simulator extends Thread{
 		//it will decrement the counter to show that 
 		//control has been calculated
 		
+		VehicleController vc = new VehicleController(this, gv);
+		this.vehicles.add(vc);
+	}
+	
+	public void addRandomVehicle(GroundVehicle gv){		
 		RandomController vc = new RandomController(this, gv);
 		this.vehicles.add(vc);
 	}
@@ -63,8 +68,6 @@ public class Simulator extends Thread{
 			
 			for(VehicleController vc : this.vehicles){
 				vehicle_num++;
-				//vc.GroundVehicleUpdate(time);
-				//TODO they told us to move this out of sim?
 				
 				double[] pose = vc.getPosition();
 				//System.out.format("%.2f %.2f %.2f %.1f%n", time.sec+time.usec/1000000.0, pose[0], pose[1], pose[2]*180.0/Math.PI);
@@ -111,7 +114,8 @@ public class Simulator extends Thread{
 				if(argv.length>1){
 					int arg1 = Integer.parseInt(argv[0]);
 					if(arg1>0){
-						double[] temp = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
+						double[] temp = {50, 25, 0};
+						//double[] temp = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
 						GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim);
 						sim.addGroundVehicle(gv);
 						arg1--;
@@ -130,8 +134,11 @@ public class Simulator extends Thread{
 			}
 		}
 		
+		sim.clk.incClock();
+		
 		for(VehicleController v : sim.vehicles){
 			v.start();
+			v.v.start();
 		}
 		
 		sim.run();
