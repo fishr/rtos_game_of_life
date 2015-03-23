@@ -23,14 +23,12 @@ public class VehicleController extends Thread {
 		this.v = v;
 		
 		constructionTasks();
+			
+		this.sim.incUsers();
 	}
 	
 	void constructionTasks(){
 		setNumSides(DEFAULT_SIDES);
-	}
-	
-	public void GroundVehicleUpdate(Timestamp time){
-		this.v.updateState(time.sec, time.usec);
 	}
 	
 	public double[] getPosition() {
@@ -85,7 +83,7 @@ public class VehicleController extends Thread {
 	}
 	
 	public Control getControl(Timestamp time){
-		long usecs= time.sec*1000000+time.usec;
+		long usecs= time.sec*Simulator.SIM_UNITS+time.usec;
 		return this.bookmarks.get(usecs%this.bookmarks.loop_time);
 	}
 	

@@ -1,4 +1,4 @@
-public class GroundVehicle {
+public class GroundVehicle extends Thread{
 
 	private final static double MIN_X = 0;
 	private final static double MAX_X = 100;
@@ -16,15 +16,26 @@ public class GroundVehicle {
 	private int usec=0;
 	
 	private boolean moved;
+	private boolean noise;
+	
+	private Simulator sim;
 
-	public GroundVehicle(double[] pose, double s, double omega) {
+	public GroundVehicle(double[] pose, double s, double omega, Simulator sim){
+		this(pose, s, omega, sim, false); 
+	}
+	
+	public GroundVehicle(double[] pose, double s, double omega, Simulator sim, boolean random) {
+		this.sim = sim;
 		this.pose = new double[3];
 		this.setPosition(pose.clone());
 
 		this.speeds = new double[2];
 		Control start = new Control(s, omega);
 		this.controlVehicle(start);
-		moved = true;
+		this.moved = true;
+		this.noise = random;
+		
+		this.sim.incUsers();
 	}
 
 	synchronized double[] getPosition() {
@@ -56,8 +67,6 @@ public class GroundVehicle {
 			this.speeds[0]=c.getSpeed();
 			this.speeds[1]=c.getRotVel();
 		}
-		moved=false;
-		notifyAll();
 	}
 
 	synchronized void setVelocity(double[] vels) {
@@ -99,6 +108,16 @@ public class GroundVehicle {
 		Control c = new Control(s, vels[2]);
 		controlVehicle(c);
 	}
+	
+	public void run(){
+		while(this.sec<Simulator.MAX_RUNTIME){
+			Timestamp time = this.sim.getTime(this.sec, this.usec);
+			this.updateState(time.sec, time.usec);
+			this.sec = time.sec;
+			this.usec = time.usec;
+			Thread.yield();
+		}
+	}
 
 	
 	/**
@@ -110,17 +129,11 @@ public class GroundVehicle {
 	 */
 	synchronized void updateState(int sec, int usec) {
 		/*Conditional Critical Region*/
-		int dsec = sec-this.sec;
-		int dusec = usec-this.usec;
+		double dsec = sec-this.sec;
+		double dusec = usec-this.usec;
 				
 		assert (dsec >= 0);
-		assert(Math.abs(dusec)<1000001);
-		
-		while(moved){
-			try{
-				wait();
-			}catch(InterruptedException e){}
-		}
+		assert(Math.abs(dusec)<Simulator.SIM_UNITS);
 		
 		// FOR PHYSICS ENGINE: THE ROTATIONAL VELOCITY GIVES A DURATION UNTIL A
 		// FULL CIRCLE IS MADE
@@ -135,14 +148,14 @@ public class GroundVehicle {
 		double[] returnPose = new double[3];
 
 		if (Math.abs(omega) <= (s * 2 * Math.PI / Double.MAX_VALUE)) {
-			double dist = s * dsec + s * (dusec / 1000000.0);
+			double dist = s * dsec + s * (dusec / Simulator.SIM_UNITS);
 			returnPose[0] = inPose[0] + Math.cos(inPose[2]) * dist;
 			returnPose[1] = inPose[1] + Math.sin(inPose[2]) * dist;
 			returnPose[2] = inPose[2];
 		} else {
 			double timePerCycle = 2 * Math.PI / omega;
 			double circumference = s * timePerCycle; // may be up to MAX_VAL
-			double arc = (omega * dsec + omega * dusec / 1000000.0) % (2 * Math.PI);
+			double arc = (omega * dsec + omega * dusec / Simulator.SIM_UNITS) % (2 * Math.PI);
 			double radius = circumference / (2 * Math.PI);
 
 			double dx = Math.cos(inPose[2] + Math.PI * Math.signum(radius)
@@ -156,12 +169,17 @@ public class GroundVehicle {
 			double center_y = inPose[1] + dy;
 			double end_ang = inPose[2] + arc - Math.PI / 2.0;
 
-			returnPose[0] = center_x + Math.cos(end_ang) * radius;
-			returnPose[1] = center_y + Math.sin(end_ang) * radius;
+			double errd = 0;
+			double errc = 0;
+			if(this.noise){
+				errd = 1*Math.random()*(dsec+dusec/Simulator.SIM_UNITS);
+				errc = 2*Math.random()*(dsec+dusec/Simulator.SIM_UNITS);
+			}
+
+			returnPose[0] = center_x + Math.cos(end_ang) * radius + errd*Math.cos(end_ang)-errc*Math.sin(end_ang);
+			returnPose[1] = center_y + Math.sin(end_ang) * radius + errd*Math.sin(end_ang)+errc*Math.sin(end_ang);
 			returnPose[2] = inPose[2] + arc;
 		}
-		this.sec = sec;
-		this.usec = usec;
 		setPosition(returnPose);
 		moved=true;
 	}

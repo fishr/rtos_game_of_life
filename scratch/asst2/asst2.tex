@@ -10,7 +10,6 @@
 \maketitle
 
 \section{VehicleController}
-
 \section{GroundVehicle}
 \subsection{Requirements}
 \subsubsection{Variables}
@@ -90,7 +89,7 @@
 		\item The method shall take as input two arguments
 		\begin{enumerate}
 			\item An unsigned integer representing the time since the vehicle started in seconds, floored.
-			\item An unsigned integer representing the additional milliseconds elapsed since the time given in the first argument.
+			\item An unsigned integer representing the additional microseconds elapsed since the time given in the first argument.
 			\item If both inputs are 0, the method shall preemptively exit.
 			\item If either input is signed, the method shall exit, throwing an error signifying invalid inputs.
 		\end{enumerate}
@@ -103,8 +102,17 @@
 		\end{enumerate}
 	\end{enumerate}
 \end{enumerate}
-
+\subsection{Unit Tests}
+I have not included unit tests for some of the Ground Vehicle functionality due to it having been tested in the previous assignment.  New functionality is being tested as part of the behavior of the other classes.
 \section{Simulator}
+\subsection{Normal Polygon Sim}
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{pentagon}
+\caption{pentagon}
+\label{fig:pentagon}
+\end{figure}
+
 
 \section{Mutex and Sync}
 \subsection{Shared Resources}
@@ -117,10 +125,25 @@
 \subsection{Critical Regions}
 \begin{enumerate}
 	\item Modifying the state of the \verb|GroundVehicle|, as in, changing velocity or position, should be done from one and only one thread at a time.
-	\item Modifying time must be an atomic operation, so listening threads never read a partially updated variable.
-	\item The position output to the client is managed by one thread, but many threads have updated positions.  Changing the pose of a vehicle must be atomic, and the output to the client shall be managed by a single thread, using a buffer that has atomic write operations.
-	\item Incrementing the status variable to indicate thread cycle completion shall be an atomic operation, as well as locking, to protect from READ-READ-MODIFY-WRITE-MODIFY-WRITE style errors.
+	\item Modifying time must be a mutex operation, so listening threads never read a partially updated variable.
+	\item The position output to the client is managed by one thread, but many threads have updated positions.  Changing the pose of a vehicle must be done in mutex, and the output to the client shall be managed by a single thread, using a buffer that has atomic write operations.
+	\item Incrementing the status variable to indicate thread cycle completion shall be a mutex operation, as well as locking, to protect from READ-READ-MODIFY-WRITE-MODIFY-WRITE style errors.
 \end{enumerate}
+
+\section{More Interesting Controllers}
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{random}
+\caption{random}
+\label{fig:random}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{follower}
+\caption{follower}
+\label{fig:follower}
+\end{figure}
+
 
 
 \end{document}

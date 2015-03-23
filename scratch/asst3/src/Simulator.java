@@ -3,16 +3,16 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 
-public class Simulator {
+public class Simulator extends Thread{
 	
 	/*Shared Resources*/
 	private HashSet<VehicleController> vehicles;
 	private Clock clk;
     Hashtable<Integer, Keyframe> schedules;
 	
-	public static final int SIM_STEP = 10000;
-	public static final int SIM_UNITS = 1000000;
-	public static final int MAX_RUNTIME = 30;
+	public static final int SIM_STEP = 10;
+	public static final int SIM_UNITS = 1000;
+	public static final int MAX_RUNTIME = 100;
 	private DisplayClient dc;
 	
 	public Simulator(){
@@ -23,6 +23,10 @@ public class Simulator {
 		schedules = new Hashtable<Integer, Keyframe>();
 	}
 	
+	public void incUsers(){
+		this.clk.incUsers();
+	}
+	
 	public void addGroundVehicle(GroundVehicle gv){
 		//have a tally of the number of vehicle objects
 		//increment upon adding vehicle
@@ -31,24 +35,25 @@ public class Simulator {
 		//it will decrement the counter to show that 
 		//control has been calculated
 		
+		VehicleController vc = new VehicleController(this, gv);
+		this.vehicles.add(vc);
+	}
+	
+	public void addRandomVehicle(GroundVehicle gv){		
 		RandomController vc = new RandomController(this, gv);
 		this.vehicles.add(vc);
-		
-		this.clk.incUsers();
 	}
 	
 	public void addFollowVehicle(GroundVehicle gv, GroundVehicle leader){
 		FollowingController vc = new FollowingController(this, gv, leader);
 		this.vehicles.add(vc);
-		
-		this.clk.incUsers();
 	}
 	
 	public Timestamp getTime(int sec, int usec){
 		return this.clk.getTime(sec, usec);
 	}
 	
-	void run(){
+	public void run(){
 		Timestamp time = this.clk.getTime();
 		List<Double> gvX = new ArrayList<Double>();
 		List<Double> gvY = new ArrayList<Double>();
@@ -63,8 +68,6 @@ public class Simulator {
 			
 			for(VehicleController vc : this.vehicles){
 				vehicle_num++;
-				vc.GroundVehicleUpdate(time);
-				//TODO maybe store these differently so it is more transparent that the sim thread is calling update
 				
 				double[] pose = vc.getPosition();
 				//System.out.format("%.2f %.2f %.2f %.1f%n", time.sec+time.usec/1000000.0, pose[0], pose[1], pose[2]*180.0/Math.PI);
@@ -92,6 +95,14 @@ public class Simulator {
 		//System.out.println("finished sim, exiting...");
 	}
 	
+	public int getCount(){
+		return this.clk.getCount();
+	}
+	
+	public int getUsers(){
+		return this.clk.getUsers();
+	}
+	
 	void incClock(){
 		this.clk.incClock();
 	}
@@ -104,19 +115,25 @@ public class Simulator {
 		Simulator sim = new Simulator();
 		if(argv.length >0){
 			try{
-				sim.dc = new DisplayClient(argv[0]);
+				sim.dc = new DisplayClient(argv[1]);
 				sim.dc.clear();
 				sim.dc.traceOn();
 				
 				if(argv.length>1){
-					double[] temp = {25,75,0};
-					for(int i =0; i<Integer.parseInt(argv[1]); i++){
-						GroundVehicle gv = new GroundVehicle(temp, 5, 0);
+					int arg1 = Integer.parseInt(argv[0]);
+					if(arg1>0){
+						double[] temp = {50, 25, 0};
+						//double[] temp = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
+						GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, true);
 						sim.addGroundVehicle(gv);
-						GroundVehicle gv2 = new GroundVehicle(temp, 5, 0);
-						sim.addFollowVehicle(gv2, gv);
-						GroundVehicle gv3 = new GroundVehicle(temp, 5, 0);
-						sim.addFollowVehicle(gv3, gv2);
+						arg1--;
+						for(int i =0; i<arg1; i++){
+							double[] temp1 = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
+							GroundVehicle gv2 = new GroundVehicle(temp1, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, true);
+							sim.addFollowVehicle(gv2, gv);
+						}
+					}else{
+						throw new IllegalArgumentException("please input the number of vehicles");
 					}
 				}
 			}
@@ -125,8 +142,11 @@ public class Simulator {
 			}
 		}
 		
+		sim.clk.incClock();
+		
 		for(VehicleController v : sim.vehicles){
 			v.start();
+			v.v.start();
 		}
 		
 		sim.run();

@@ -1,4 +1,3 @@
-
 public class FollowingController extends VehicleController {
 
 	GroundVehicle leader;
@@ -21,7 +20,7 @@ public class FollowingController extends VehicleController {
 		if((thisPose[0]-thatPose[0])==0.0){
 			angle = Math.PI/4*Math.signum((thatPose[1]-thisPose[1]));
 		}else{
-			angle= Math.atan((thisPose[1]-thatPose[1])/(thisPose[0]-thatPose[0]));
+			angle= Math.atan((thatPose[1]-thisPose[1])/(thatPose[0]-thisPose[0]));
 			if(thatPose[0]-thisPose[0]<0.0){
 				angle+=Math.signum(thatPose[1]-thisPose[1])*Math.PI;
 				if(thatPose[1]-thisPose[1]==0.0){
@@ -29,7 +28,7 @@ public class FollowingController extends VehicleController {
 				}
 			}
 		}
-		double angErr = angle-thisPose[2];
+		double angErr = util.wrapAngle(util.wrapAngle(angle)-thisPose[2]);
 		
 		return new Control(dist, angErr);
 	}

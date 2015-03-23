@@ -12,8 +12,8 @@ public class RandomController extends VehicleController
 	public Control getControl(Timestamp time){
 		if(time.usec!=0)
 			return null;
-		double randomS = Math.random()*5.0+5.0;
-		double randomTheta = (Math.random()*2.0-1.0)*Math.PI/4;
+		double randomS = Math.random()*(GroundVehicle.MAX_S_DOT-GroundVehicle.MIN_S_DOT)+GroundVehicle.MIN_S_DOT;
+		double randomTheta = Math.random()*(GroundVehicle.MAX_THETA_DOT-GroundVehicle.MIN_THETA_DOT)+GroundVehicle.MIN_THETA_DOT;
 		return new Control(randomS, randomTheta);
 	}
 }
