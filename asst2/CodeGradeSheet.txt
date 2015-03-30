@@ -1,0 +1,29 @@
+Control.java (5)
+-0
+
+FollowingController.java (5)
+-0
+
+GroundVehicle.java (5)
+-0
+
+RandomController.java (5)
+-0
+
+Simulator.java (5)
+-1: Where is the conditional critical region? please refer to the solution
+
+TestControl.java (5)
+-0
+
+TestGroundVehicle.java (5)
+-0
+
+TestSimulator.java (5)
+-0
+
+TestVehicleController.java (5)
+-5: You should run the unit test for previously implemented code as well, over and over again. This is the point of the unit test
+
+VehicleController.java (5)
+-1: Where is the conditional critical region? please refer to the solution
