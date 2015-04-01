@@ -9,8 +9,10 @@ public class Simulator extends Thread{
 	private HashSet<VehicleController> vehicles;
 	private Clock clk;
     Hashtable<Integer, Keyframe> schedules;
+    
+    public Boolean lock;
 	
-	public static final int SIM_STEP = 10;
+	public static final int SIM_STEP = 1;
 	public static final int SIM_UNITS = 1000;
 	public static final int MAX_RUNTIME = 100;
 	private DisplayClient dc;
@@ -21,6 +23,8 @@ public class Simulator extends Thread{
 		
 		this.clk = new Clock(0,0, SIM_STEP);
 		schedules = new Hashtable<Integer, Keyframe>();
+		
+		this.lock = new Boolean(false);
 	}
 	
 	public void incUsers(){
@@ -36,6 +40,11 @@ public class Simulator extends Thread{
 		//control has been calculated
 		
 		VehicleController vc = new VehicleController(this, gv);
+		this.vehicles.add(vc);
+	}
+	
+	public void addLeaderVehicle(GroundVehicle gv){
+		LeadingController vc = new LeadingController(this, gv);
 		this.vehicles.add(vc);
 	}
 	
@@ -117,7 +126,7 @@ public class Simulator extends Thread{
 			try{
 				sim.dc = new DisplayClient(argv[1]);
 				sim.dc.clear();
-				sim.dc.traceOn();
+				sim.dc.traceOff();
 				
 				if(argv.length>1){
 					int arg1 = Integer.parseInt(argv[0]);
@@ -125,12 +134,14 @@ public class Simulator extends Thread{
 						double[] temp = {50, 25, 0};
 						//double[] temp = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
 						GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, true);
-						sim.addGroundVehicle(gv);
+						LeadingController vc = new LeadingController(sim, gv);
+						sim.vehicles.add(vc);
 						arg1--;
 						for(int i =0; i<arg1; i++){
 							double[] temp1 = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
 							GroundVehicle gv2 = new GroundVehicle(temp1, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, true);
 							sim.addFollowVehicle(gv2, gv);
+							vc.addFollower(gv2);
 						}
 					}else{
 						throw new IllegalArgumentException("please input the number of vehicles");
@@ -146,7 +157,7 @@ public class Simulator extends Thread{
 		
 		for(VehicleController v : sim.vehicles){
 			v.start();
-			v.v.start();
+			v.startVehicle();
 		}
 		
 		sim.run();

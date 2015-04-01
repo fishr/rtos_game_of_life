@@ -1,4 +1,4 @@
-public class GroundVehicle extends Thread{
+public class GroundVehicle extends Thread {
 
 	private final static double MIN_X = 0;
 	private final static double MAX_X = 100;
