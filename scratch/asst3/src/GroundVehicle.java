@@ -1,9 +1,9 @@
 public class GroundVehicle extends Thread {
 
-	private final static double MIN_X = 0;
-	private final static double MAX_X = 100;
-	private final static double MIN_Y = 0;
-	private final static double MAX_Y = 100;
+	public final static double MIN_X = 0;
+	public final static double MAX_X = 100;
+	public final static double MIN_Y = 0;
+	public final static double MAX_Y = 100;
 	public final static double MIN_S_DOT = 5;
 	public final static double MAX_S_DOT = 10;
 	public final static double MIN_THETA_DOT = -Math.PI / 4.0;
@@ -15,7 +15,6 @@ public class GroundVehicle extends Thread {
 	private int sec=0;
 	private int usec=0;
 	
-	private boolean moved;
 	private boolean noise;
 	
 	private Simulator sim;
@@ -32,7 +31,6 @@ public class GroundVehicle extends Thread {
 		this.speeds = new double[2];
 		Control start = new Control(s, omega);
 		this.controlVehicle(start);
-		this.moved = true;
 		this.noise = random;
 		
 		this.sim.incUsers();
@@ -172,15 +170,14 @@ public class GroundVehicle extends Thread {
 			double errd = 0;
 			double errc = 0;
 			if(this.noise){
-				errd = 1*Math.random()*(dsec+dusec/Simulator.SIM_UNITS);
-				errc = 2*Math.random()*(dsec+dusec/Simulator.SIM_UNITS);
+				errd = 10*Math.random()*(dsec+dusec/Simulator.SIM_UNITS);
+				errc = 20*Math.random()*(dsec+dusec/Simulator.SIM_UNITS);
 			}
 
 			returnPose[0] = center_x + Math.cos(end_ang) * radius + errd*Math.cos(end_ang)-errc*Math.sin(end_ang);
-			returnPose[1] = center_y + Math.sin(end_ang) * radius + errd*Math.sin(end_ang)+errc*Math.sin(end_ang);
+			returnPose[1] = center_y + Math.sin(end_ang) * radius + errd*Math.sin(end_ang)+errc*Math.cos(end_ang);
 			returnPose[2] = inPose[2] + arc;
 		}
 		setPosition(returnPose);
-		moved=true;
 	}
 }

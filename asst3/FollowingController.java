@@ -13,22 +13,10 @@ public class FollowingController extends VehicleController {
 	
 	@Override
 	public Control getControl(Timestamp time){
-		double[] thisPose = this.v.getPosition();
+		double[] thisPose = this.getPosition();
 		double[] thatPose = this.leader.getPosition();
-		double dist = (thisPose[0]-thatPose[0])*(thisPose[0]-thatPose[0])+(thisPose[1]-thatPose[1])*(thisPose[1]-thatPose[1]);
-		double angle = 0;
-		if((thisPose[0]-thatPose[0])==0.0){
-			angle = Math.PI/4*Math.signum((thatPose[1]-thisPose[1]));
-		}else{
-			angle= Math.atan((thatPose[1]-thisPose[1])/(thatPose[0]-thisPose[0]));
-			if(thatPose[0]-thisPose[0]<0.0){
-				angle+=Math.signum(thatPose[1]-thisPose[1])*Math.PI;
-				if(thatPose[1]-thisPose[1]==0.0){
-					angle=-Math.PI;
-				}
-			}
-		}
-		double angErr = util.wrapAngle(util.wrapAngle(angle)-thisPose[2]);
+		double dist = util.getDist(thisPose, thatPose);
+		double angErr = util.getAngleErr(thisPose, thatPose);
 		
 		return new Control(dist, angErr);
 	}

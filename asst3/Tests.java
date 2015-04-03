@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -137,6 +139,39 @@ public class Tests {
 		 
 		 Assert.assertEquals(0, sim.getCount());
 		 Assert.assertEquals(2, sim.getUsers());
+	 }
+	 
+	 @Test
+	 public void addGroundVehicle(){
+		final int testCount = 300;
+		final Simulator sim = new Simulator();
+		final ArrayList<GroundVehicle> gvs = new ArrayList<GroundVehicle>(testCount+50);
+		final ArrayList<Thread> threads = new ArrayList<Thread>(testCount+50);
+		final double[] pose = {25,25,0};
+		for(int i = 0; i<testCount; i++){
+			final GroundVehicle gv = new GroundVehicle(pose, 7, 0.5/(testCount+1), sim);
+			gvs.add(gv);
+			final int fi =i;
+			threads.add((new Thread(new Runnable(){public void run(){sim.addGroundVehicle(gvs.get(fi));};})));
+		}
+
+		for(int i = 0; i<testCount; i++){
+			threads.get(i).start();;
+		}
+		
+		for(int i = 0; i<testCount; i++){
+			try {
+				threads.get(i).join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			};
+		}
+		
+		Assert.assertEquals(testCount,gvs.size());
+		Assert.assertEquals(testCount,threads.size());
+		
+		Assert.assertEquals(testCount,sim.getVehicleCount());
+		Assert.assertEquals(testCount,sim.getGroundVehicleCount());
 	 }
 	 
 	 /* Ground Vehicle */

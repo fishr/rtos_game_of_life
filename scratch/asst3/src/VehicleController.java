@@ -1,10 +1,8 @@
-import java.util.Hashtable;
-
 
 public class VehicleController extends Thread {
 
 	private GroundVehicle v;
-	Simulator sim;
+	private Simulator sim;
 	
 	int sides = 5;
 	Keyframe bookmarks;
@@ -108,5 +106,9 @@ public class VehicleController extends Thread {
 	
 	public int getVehicleCode(){
 		return this.v.hashCode();
+	}
+	
+	double[] getVehiclePosition(int hash){
+		return this.sim.getVehiclePosition(hash);
 	}
 }

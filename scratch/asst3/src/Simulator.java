@@ -1,28 +1,33 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Simulator extends Thread{
 	
 	/*Shared Resources*/
-	private HashSet<VehicleController> vehicles;
+	private Set<VehicleController> vehicles;
+	private ConcurrentHashMap<Integer, GroundVehicle> groundVehicles;
 	private Clock clk;
     Hashtable<Integer, Keyframe> schedules;
     
     public Boolean lock;
 	
-	public static final int SIM_STEP = 1;
+	public static final int SIM_STEP = 10;
 	public static final int SIM_UNITS = 1000;
 	public static final int MAX_RUNTIME = 100;
 	private DisplayClient dc;
 	
 	public Simulator(){
 		//this.vehicle = new GroundVehicle(temp, 5, 0);
-		vehicles = new HashSet<VehicleController>();
+		this.vehicles = Collections.newSetFromMap(new ConcurrentHashMap<VehicleController, Boolean>());
+		this.groundVehicles = new ConcurrentHashMap<Integer, GroundVehicle>(); 
 		
 		this.clk = new Clock(0,0, SIM_STEP);
-		schedules = new Hashtable<Integer, Keyframe>();
+		this.schedules = new Hashtable<Integer, Keyframe>();
 		
 		this.lock = new Boolean(false);
 	}
@@ -40,22 +45,28 @@ public class Simulator extends Thread{
 		//control has been calculated
 		
 		VehicleController vc = new VehicleController(this, gv);
-		this.vehicles.add(vc);
+		__addgroundvehicle(vc, gv);
 	}
 	
-	public void addLeaderVehicle(GroundVehicle gv){
+	private synchronized void __addgroundvehicle(VehicleController vc, GroundVehicle gv){
+			this.vehicles.add(vc);
+			this.groundVehicles.put(gv.hashCode(), gv);
+	}
+	
+	public LeadingController addLeaderVehicle(GroundVehicle gv){
 		LeadingController vc = new LeadingController(this, gv);
-		this.vehicles.add(vc);
+		__addgroundvehicle(vc, gv);
+		return vc;
 	}
 	
 	public void addRandomVehicle(GroundVehicle gv){		
 		RandomController vc = new RandomController(this, gv);
-		this.vehicles.add(vc);
+		__addgroundvehicle(vc, gv);
 	}
 	
 	public void addFollowVehicle(GroundVehicle gv, GroundVehicle leader){
 		FollowingController vc = new FollowingController(this, gv, leader);
-		this.vehicles.add(vc);
+		__addgroundvehicle(vc, gv);
 	}
 	
 	public Timestamp getTime(int sec, int usec){
@@ -120,13 +131,17 @@ public class Simulator extends Thread{
 		return this.clk.getTime();
 	}
 	
+	public int getGroundVehicleCount(){
+		return this.groundVehicles.size();
+	}
+	
 	public static void main(String argv[]){
 		Simulator sim = new Simulator();
 		if(argv.length >0){
 			try{
 				sim.dc = new DisplayClient(argv[1]);
 				sim.dc.clear();
-				sim.dc.traceOff();
+				sim.dc.traceOn();
 				
 				if(argv.length>1){
 					int arg1 = Integer.parseInt(argv[0]);
@@ -134,14 +149,13 @@ public class Simulator extends Thread{
 						double[] temp = {50, 25, 0};
 						//double[] temp = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
 						GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, true);
-						LeadingController vc = new LeadingController(sim, gv);
-						sim.vehicles.add(vc);
+						LeadingController vc = sim.addLeaderVehicle(gv);
 						arg1--;
 						for(int i =0; i<arg1; i++){
 							double[] temp1 = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
 							GroundVehicle gv2 = new GroundVehicle(temp1, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, true);
 							sim.addFollowVehicle(gv2, gv);
-							vc.addFollower(gv2);
+							vc.addFollower(gv2.hashCode());
 						}
 					}else{
 						throw new IllegalArgumentException("please input the number of vehicles");
@@ -163,5 +177,14 @@ public class Simulator extends Thread{
 		sim.run();
 		
 		System.exit(0);
+	}
+
+	public double[] getVehiclePosition(int hash) {
+		GroundVehicle gv = this.groundVehicles.get(hash);
+		return gv.getPosition();
+	}
+
+	public int getVehicleCount() {
+		return this.vehicles.size();
 	}
 }
