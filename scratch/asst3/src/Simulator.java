@@ -134,6 +134,10 @@ public class Simulator extends Thread{
 	public int getGroundVehicleCount(){
 		return this.groundVehicles.size();
 	}
+
+	public int getVehicleCount() {
+		return this.vehicles.size();
+	}
 	
 	public static void main(String argv[]){
 		Simulator sim = new Simulator();
@@ -182,9 +186,5 @@ public class Simulator extends Thread{
 	public double[] getVehiclePosition(int hash) {
 		GroundVehicle gv = this.groundVehicles.get(hash);
 		return gv.getPosition();
-	}
-
-	public int getVehicleCount() {
-		return this.vehicles.size();
 	}
 }
