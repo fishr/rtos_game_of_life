@@ -81,7 +81,7 @@ public class RtTest {
 			this.rt = rt;
 		}
 		
-		handleAsyncEvent(){
+		void handleAsyncEvent(){
 			ReleaseParameters rp = this.rt.getReleaseParameters();
 			rp.setCost(rp.getCost().add(1,0));
 			this.rt.schedulePeriodic();
@@ -95,7 +95,7 @@ public class RtTest {
 			 this.rt=rt;
 		 }
 		 
-		 handleAsyncEvent(){
+		 void handleAsyncEvent(){
 			 this.rt.schedulePeriodic();
 		 }
 	}
