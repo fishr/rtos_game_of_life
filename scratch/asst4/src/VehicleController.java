@@ -93,13 +93,15 @@ public class VehicleController implements Runnable {
 			v.controlVehicle(getControl(time));
 			this.sec = time.sec;
 			this.usec = time.usec;
-			Thread.yield();
+			if(Thread.currentThread().getClass().equals(RealtimeThread.class)){
+				RealtimeThread.waitForNextPeriod();
+			}
 		}
 		
 	}
 	
-	public void startThreadVehicle(){
-		new Thread(this.v).start();
+	public Runnable getVehicleRun(){
+		return this.v;
 	}
 	
 	public int getVehicleCode(){

@@ -1,8 +1,8 @@
-public class Clock {
+public class NonRTClock {
 
 	private final long start_time;
 	
-	public Clock(){
+	public NonRTClock(){
 		this.start_time = System.currentTimeMillis();
 	}
 	

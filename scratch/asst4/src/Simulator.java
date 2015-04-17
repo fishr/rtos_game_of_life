@@ -12,7 +12,7 @@ public class Simulator implements Runnable{
 	/*Shared Resources*/
 	Set<VehicleController> vehicles;
 	private ConcurrentHashMap<Integer, GroundVehicle> groundVehicles;
-	private Clock clk;
+	private NonRTClock clk;
     Hashtable<Integer, Keyframe> schedules;
     
     public Boolean lock;
@@ -27,7 +27,7 @@ public class Simulator implements Runnable{
 		this.vehicles = Collections.newSetFromMap(new ConcurrentHashMap<VehicleController, Boolean>());
 		this.groundVehicles = new ConcurrentHashMap<Integer, GroundVehicle>(); 
 		
-		this.clk = new Clock();
+		this.clk = new NonRTClock();
 		this.schedules = new Hashtable<Integer, Keyframe>();
 		
 		this.lock = new Boolean(false);
@@ -88,10 +88,14 @@ public class Simulator implements Runnable{
 			
 			dc.update(vehicle_num, gvx, gvy, gvtheta);
 
-			this.clk.incClock();
+
+			if(Thread.currentThread().getClass().equals(RealtimeThread.class)){
+				RealtimeThread.waitForNextPeriod();
+			}else{
+				this.clk.incClock();
+			}
 			//call update states
 			time = this.clk.getTime();
-			Thread.yield();
 		}
 		
 		//System.out.println("finished sim, exiting...");

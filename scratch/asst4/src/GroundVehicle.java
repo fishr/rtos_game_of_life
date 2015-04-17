@@ -111,7 +111,9 @@ public class GroundVehicle implements Runnable {
 			this.updateState(time.sec, time.usec);
 			this.sec = time.sec;
 			this.usec = time.usec;
-			Thread.yield();
+			if(Thread.currentThread().getClass().equals(RealtimeThread.class)){
+				RealtimeThread.waitForNextPeriod();
+			}
 		}
 	}
 
@@ -124,12 +126,13 @@ public class GroundVehicle implements Runnable {
 	 * @param usec the integer number of microseconds that have elapsed since the second given in the previous parameter
 	 */
 	synchronized void updateState(long sec2, int usec) {
-		/*Conditional Critical Region*/
 		double dsec = sec2-this.sec;
 		double dusec = usec-this.usec;
 				
 		assert (dsec >= 0);
 		assert(Math.abs(dusec)<Simulator.SIM_UNITS);
+		if(dsec==0&&dusec==0)
+			return;
 		
 		// FOR PHYSICS ENGINE: THE ROTATIONAL VELOCITY GIVES A DURATION UNTIL A
 		// FULL CIRCLE IS MADE
