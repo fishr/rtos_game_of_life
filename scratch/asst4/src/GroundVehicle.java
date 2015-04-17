@@ -1,3 +1,5 @@
+import javax.realtime.RealtimeThread;
+
 public class GroundVehicle implements Runnable {
 
 	public final static double MIN_X = 0;
