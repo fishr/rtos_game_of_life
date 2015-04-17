@@ -89,7 +89,7 @@ public class Simulator implements Runnable{
 			dc.update(vehicle_num, gvx, gvy, gvtheta);
 
 
-			if(Thread.currentThread().getClass().equals(RealtimeThread.class)){
+			if(Thread.currentThread() instanceof RealtimeThread){
 				RealtimeThread.waitForNextPeriod();
 			}else{
 				this.clk.incClock();

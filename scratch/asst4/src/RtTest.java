@@ -78,10 +78,11 @@ public class RtTest {
 		RealtimeThread rt;
 		
 		public OverrunHand(RealtimeThread rt){
+			super(new PriorityParameters(PriorityScheduler.instance().getMaxPriority()), null, null, null, null, null);
 			this.rt = rt;
 		}
 		
-		void handleAsyncEvent(){
+		public void handleAsyncEvent(){
 			ReleaseParameters rp = this.rt.getReleaseParameters();
 			rp.setCost(rp.getCost().add(1,0));
 			this.rt.schedulePeriodic();
@@ -95,7 +96,7 @@ public class RtTest {
 			 this.rt=rt;
 		 }
 		 
-		 void handleAsyncEvent(){
+		 public void handleAsyncEvent(){
 			 this.rt.schedulePeriodic();
 		 }
 	}

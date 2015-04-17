@@ -93,7 +93,7 @@ public class VehicleController implements Runnable {
 			v.controlVehicle(getControl(time));
 			this.sec = time.sec;
 			this.usec = time.usec;
-			if(Thread.currentThread().getClass().equals(RealtimeThread.class)){
+			if(Thread.currentThread() instanceof RealtimeThread){
 				RealtimeThread.waitForNextPeriod();
 			}
 		}

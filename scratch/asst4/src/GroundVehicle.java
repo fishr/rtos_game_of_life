@@ -111,7 +111,7 @@ public class GroundVehicle implements Runnable {
 			this.updateState(time.sec, time.usec);
 			this.sec = time.sec;
 			this.usec = time.usec;
-			if(Thread.currentThread().getClass().equals(RealtimeThread.class)){
+			if(Thread.currentThread() instanceof RealtimeThread){
 				RealtimeThread.waitForNextPeriod();
 			}
 		}
