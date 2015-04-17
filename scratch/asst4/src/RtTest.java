@@ -41,9 +41,9 @@ public class RtTest {
 				realCont.setReleaseParameters(pp1);
 
 				RealtimeThread realVeh = new RealtimeThread(null, null, null, null, null, v.getVehicleRun());
-				OverrunHand over = new OverrunHand(realVeh);
-				MissHand miss = new MissHand(realVeh);
-				PeriodicParameters pp2 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,over,miss);
+				OverrunHand over2 = new OverrunHand(realVeh);
+				MissHand miss2 = new MissHand(realVeh);
+				PeriodicParameters pp2 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,over2,miss2);
 				realCont.setSchedulingParameters(prip); 
 				realCont.setReleaseParameters(pp2);
 			}
