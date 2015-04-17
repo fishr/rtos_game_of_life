@@ -77,27 +77,27 @@ public class RtTest {
 		
 		RealtimeThread rt;
 		
-		public OverrunHand(RealtimeThread rt){
+		public OverrunHand(RealtimeThread rtin){
 			super(new PriorityParameters(PriorityScheduler.instance().getMaxPriority()), null, null, null, null, null);
-			this.rt = rt;
+			rt = rtin;
 		}
 		
 		public void handleAsyncEvent(){
 			ReleaseParameters rp = this.rt.getReleaseParameters();
 			rp.setCost(rp.getCost().add(1,0));
-			this.rt.schedulePeriodic();
+			rt.schedulePeriodic();
 		}
 	}
 	
 	class MissHand extends AsyncEventHandler {
 		 RealtimeThread rt;
 		 
-		 public MissHand(RealtimeThread rt){
-			 this.rt=rt;
+		 public MissHand(RealtimeThread rtin){
+			 rt=rtin;
 		 }
 		 
 		 public void handleAsyncEvent(){
-			 this.rt.schedulePeriodic();
+			 rt.schedulePeriodic();
 		 }
 	}
 }
