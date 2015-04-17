@@ -12,7 +12,7 @@ public class util {
 	}
 
 	public static double wrapAngle(double d) {
-		assert(Double.isFinite(d));
+		assert(Double.isInfinite(d)||Double.isNaN(d));
 		double tempTheta = (d%(2*Math.PI));
 		if(tempTheta>=Math.PI){
 			tempTheta=tempTheta-(2*Math.PI);
