@@ -49,9 +49,9 @@ public class RtTest {
 			}
 			
 			RealtimeThread realSim = new RealtimeThread(null, null, null, null, null, sim);
-			OverrunHand over = new OverrunHand(realSim);
-			MissHand miss = new MissHand(realSim);
-			PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,over,miss);
+			OverrunHand over1 = new OverrunHand(realSim);
+			MissHand miss1 = new MissHand(realSim);
+			PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,over1,miss1);
 			realSim.setSchedulingParameters(prip); 
 			realSim.setReleaseParameters(pp1);
 		}else{
@@ -83,7 +83,7 @@ public class RtTest {
 		}
 		
 		public void handleAsyncEvent(){
-			ReleaseParameters rp = this.rt.getReleaseParameters();
+			ReleaseParameters rp = rt.getReleaseParameters();
 			rp.setCost(rp.getCost().add(1,0));
 			rt.schedulePeriodic();
 		}
