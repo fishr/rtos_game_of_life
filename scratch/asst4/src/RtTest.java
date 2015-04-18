@@ -31,7 +31,7 @@ public class RtTest {
 				
 		
 		if(rt){
-			PriorityParameters prip = new PriorityParameters(new PriorityScheduler().getNormPriority());
+			PriorityParameters prip = new PriorityParameters(PriorityScheduler.instance().getNormPriority());
 			for(VehicleController v : sim.vehicles){
 				RealtimeThread realCont = new RealtimeThread(null, null, null, null, null, v);
 				PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(1,0), null, null,new OverrunHand(realCont),new MissHand(realCont));
@@ -45,7 +45,7 @@ public class RtTest {
 			}
 			
 			RealtimeThread realSim = new RealtimeThread(null, null, null, null, null, sim);
-			PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,new OverrunHand(realSim),new MissHand(realSim));
+			PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null, new OverrunHand(realSim), new MissHand(realSim));
 			realSim.setSchedulingParameters(prip); 
 			realSim.setReleaseParameters(pp1);
 		}else{
@@ -65,33 +65,5 @@ public class RtTest {
 			}
 		}
 		System.exit(0);
-	}
-	
-	class OverrunHand extends AsyncEventHandler {
-		
-		RealtimeThread rt;
-		
-		public OverrunHand(RealtimeThread rtin){
-			super(new PriorityParameters(PriorityScheduler.instance().getMaxPriority()), null, null, null, null, null);
-			rt = rtin;
-		}
-		
-		public void handleAsyncEvent(){
-			ReleaseParameters rp = rt.getReleaseParameters();
-			rp.setCost(rp.getCost().add(1,0));
-			rt.schedulePeriodic();
-		}
-	}
-	
-	class MissHand extends AsyncEventHandler {
-		 RealtimeThread rt;
-		 
-		 public MissHand(RealtimeThread rtin){
-			 rt=rtin;
-		 }
-		 
-		 public void handleAsyncEvent(){
-			 rt.schedulePeriodic();
-		 }
 	}
 }
