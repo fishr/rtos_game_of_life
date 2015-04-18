@@ -48,6 +48,8 @@ public class RtTest {
 			PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null, new OverrunHand(realSim), new MissHand(realSim));
 			realSim.setSchedulingParameters(prip); 
 			realSim.setReleaseParameters(pp1);
+			
+			realSim.join();
 		}else{
 			for(VehicleController v : sim.vehicles){
 				new Thread(v).start();
