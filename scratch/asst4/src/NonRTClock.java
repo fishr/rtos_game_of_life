@@ -8,7 +8,7 @@ public class NonRTClock {
 	
 	public synchronized Timestamp getTime(){
 		long thistime = System.currentTimeMillis()-start_time;
-		long secs = Math.floorDiv(thistime,1000);
+		long secs = thistime/1000l;
 		int usecs = (int) (thistime%1000);
 		return new Timestamp(secs, usecs);
 	}
