@@ -49,7 +49,11 @@ public class RtTest {
 			realSim.setSchedulingParameters(prip); 
 			realSim.setReleaseParameters(pp1);
 			
-			realSim.join();
+			try{
+				realSim.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}else{
 			for(VehicleController v : sim.vehicles){
 				new Thread(v).start();
