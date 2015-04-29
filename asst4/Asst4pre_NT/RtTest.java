@@ -16,13 +16,6 @@ public class RtTest {
 				GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, true);
 				sim.addCircleVehicle(gv);
 				
-				if(argv.length>1){
-					if(argv[1].equalsIgnoreCase("realtime")){
-						rt=true;
-					}else{
-						throw new IllegalArgumentException("please input the number of vehicles");
-					}
-				}
 			}
 			catch(NumberFormatException e){
 				System.out.println("ip address?");
