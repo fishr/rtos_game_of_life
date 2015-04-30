@@ -2,7 +2,7 @@ import javax.realtime.*;
 
 public class RtTest {
 
-	private static boolean rt=false;
+	private static boolean rt=true;
 
 	public static void main(String argv[]){
 		Simulator sim = new Simulator();
@@ -16,13 +16,6 @@ public class RtTest {
 				GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, true);
 				sim.addCircleVehicle(gv);
 				
-				if(argv.length>1){
-					if(argv[1].equalsIgnoreCase("realtime")){
-						rt=true;
-					}else{
-						throw new IllegalArgumentException("please input the number of vehicles");
-					}
-				}
 			}
 			catch(NumberFormatException e){
 				System.out.println("ip address?");
@@ -45,13 +38,13 @@ public class RtTest {
 			}
 			
 			RealtimeThread realSim = new RealtimeThread(null, null, null, null, null, sim);
-			PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(100,0), null, null, new OverrunHand(realSim), new MissHand(realSim));
+			PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null, new OverrunHand(realSim), new MissHand(realSim));
 			realSim.setSchedulingParameters(prip); 
 			realSim.setReleaseParameters(pp1);
 			
-			try{
+			try {
 				realSim.join();
-			} catch (InterruptedException e) {
+			}catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}else{
