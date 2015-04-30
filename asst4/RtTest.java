@@ -45,7 +45,7 @@ public class RtTest {
 			}
 			
 			RealtimeThread realSim = new RealtimeThread(null, null, null, null, null, sim);
-			PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null, new OverrunHand(realSim), new MissHand(realSim));
+			PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(100,0), null, null, new OverrunHand(realSim), new MissHand(realSim));
 			realSim.setSchedulingParameters(prip); 
 			realSim.setReleaseParameters(pp1);
 			
