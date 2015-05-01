@@ -32,7 +32,7 @@ public class RtTest {
 			for(VehicleController v : sim.vehicles){
 				System.out.println("is this thing on?");
 				RealtimeThread realCont = new RealtimeThread(null, null, null, null, null, v);
-				PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(1,0), null, null,new OverrunHand(realCont,sim),new MissHand(realCont));
+				PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,new OverrunHand(realCont,sim),new MissHand(realCont));
 				//realCont.setSchedulingParameters(prip); 
 				realCont.setReleaseParameters(pp1);
 				realCont.start();
@@ -45,7 +45,7 @@ public class RtTest {
 }
 			
 			RealtimeThread realSim = new RealtimeThread(null, null, null, null, null, sim);
-			PeriodicParameters pp3 = new PeriodicParameters(null, new RelativeTime(5,0), null, null, new OverrunHand(realSim,sim), new MissHand(realSim));
+			PeriodicParameters pp3 = new PeriodicParameters(null, new RelativeTime(15,0), null, null, new OverrunHand(realSim,sim), new MissHand(realSim));
 			//realSim.setSchedulingParameters(prip); 
 			realSim.setReleaseParameters(pp3);
 			realSim.start();
