@@ -87,7 +87,6 @@ public class Simulator implements Runnable{
 				gvtheta[i] = (gvTheta.get(i));
 			}
 			
-			System.out.print("Cost: "+this.cost+" ");
 			dc.update(vehicle_num, gvx, gvy, gvtheta);
 
 
