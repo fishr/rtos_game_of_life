@@ -6,10 +6,10 @@ class OverrunHand extends AsyncEventHandler {
 	RealtimeThread rt;
 	Hashtable<Long, Long> costDict;
 	
-	public OverrunHand(RealtimeThread rtin){
+	public OverrunHand(RealtimeThread rtin, Hashtable<Long, Long> costDict){
 		super(new PriorityParameters(PriorityScheduler.instance().getMaxPriority()), null, null, null, null, null);
 		this.rt = rtin;
-		this.costDict = new Hashtable<Long, Long>();
+		this.costDict = costDict;
 	}
 	
 	public void handleAsyncEvent(){

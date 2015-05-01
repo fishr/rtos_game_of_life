@@ -1,3 +1,5 @@
+import java.util.Hashtable;
+
 import javax.realtime.*;
 
 public class RtTest {
@@ -25,6 +27,13 @@ public class RtTest {
 
 		System.out.println("about to enter real time"); 				
 		
+		Hashtable<Long, Long> missV = new Hashtable<Long, Long>();
+		Hashtable<Long, Long> missVeh = new Hashtable<Long, Long>();
+		Hashtable<Long, Long> missSim = new Hashtable<Long, Long>();
+		Hashtable<Long, Long> overV = new Hashtable<Long, Long>();
+		Hashtable<Long, Long> overVeh = new Hashtable<Long, Long>();
+		Hashtable<Long, Long> overSim = new Hashtable<Long, Long>();
+		
 		if(rt){
 			System.out.println("just before priorities");	
 			//PriorityParameters prip = new PriorityParameters(PriorityScheduler.instance().getNormPriority());
@@ -32,20 +41,20 @@ public class RtTest {
 			for(VehicleController v : sim.vehicles){
 				System.out.println("is this thing on?");
 				RealtimeThread realCont = new RealtimeThread(null, null, null, null, null, v);
-				PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,new OverrunHand(realCont),new MissHand(realCont));
+				PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,new OverrunHand(realCont, overV),new MissHand(realCont, missV));
 				//realCont.setSchedulingParameters(prip); 
 				realCont.setReleaseParameters(pp1);
 				realCont.start();
 
 				RealtimeThread realVeh = new RealtimeThread(null, null, null, null, null, v.getVehicleRun());
-				PeriodicParameters pp2 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,new OverrunHand(realVeh),new MissHand(realVeh));
+				PeriodicParameters pp2 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,new OverrunHand(realVeh, overVeh),new MissHand(realVeh, missVeh));
 				//realVeh.setSchedulingParameters(prip); 
 				realVeh.setReleaseParameters(pp2);
 				realVeh.start();			
 }
 			
 			RealtimeThread realSim = new RealtimeThread(null, null, null, null, null, sim);
-			PeriodicParameters pp3 = new PeriodicParameters(null, new RelativeTime(15,0), null, null, new OverrunHand(realSim), new MissHand(realSim));
+			PeriodicParameters pp3 = new PeriodicParameters(null, new RelativeTime(15,0), null, null, new OverrunHand(realSim, overSim), new MissHand(realSim, missSim));
 			//realSim.setSchedulingParameters(prip); 
 			realSim.setReleaseParameters(pp3);
 			realSim.start();
@@ -58,6 +67,20 @@ public class RtTest {
 			}catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			
+			System.out.print("missV ");
+			util.dictPrint(missV);
+			System.out.print("missVeh ");
+			util.dictPrint(missVeh);
+			System.out.print("missSim ");
+			util.dictPrint(missSim);
+			System.out.print("overV ");
+			util.dictPrint(overV);
+			System.out.print("overVeh ");
+			util.dictPrint(overVeh);
+			System.out.print("overSim ");
+			util.dictPrint(overSim);
+
 		}else{
 			for(VehicleController v : sim.vehicles){
 				new Thread(v).start();

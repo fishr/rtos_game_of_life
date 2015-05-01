@@ -7,10 +7,10 @@ class MissHand extends AsyncEventHandler {
 	 Hashtable<Long, Long> missDict;
 	 private int miss=0;
 	 
-	 public MissHand(RealtimeThread rtin){
+	 public MissHand(RealtimeThread rtin, Hashtable<Long, Long> missDict){
 		 super(new PriorityParameters(PriorityScheduler.instance().getMaxPriority()), null, null, null, null, null);
 		 this.rt=rtin;
-		 this.missDict = new Hashtable<Long, Long>();
+		 this.missDict = missDict;
 	 }
 	 
 	 public void handleAsyncEvent(){

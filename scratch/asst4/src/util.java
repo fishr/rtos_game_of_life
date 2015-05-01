@@ -1,3 +1,5 @@
+import java.util.Hashtable;
+
 
 public class util {
 
@@ -67,5 +69,11 @@ public class util {
 		double dist = (thisPose[0]-thatPose[0])*(thisPose[0]-thatPose[0])+(thisPose[1]-thatPose[1])*(thisPose[1]-thatPose[1]);
 		
 		return Math.sqrt(dist);
+	}
+	
+	public static void dictPrint(Hashtable<Long,Long> table){
+		for(Long k : table.keySet()){
+			System.out.println(k+" Val: "+table.get(k));
+		}
 	}
 }
