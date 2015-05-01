@@ -17,8 +17,12 @@ public class RtTest {
 				double[] temp = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
 				GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, false);
 				sim.addCircleVehicle(gv);
+				GroundVehicle gv3 = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, false);
+				LeadingController lc = sim.addLeaderVehicle(gv3);
 				GroundVehicle gv2 = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, false);
 				sim.addFollowVehicle(gv2,gv);
+				lc.addFollower(gv.hashCode());
+				lc.addFollower(gv2.hashCode());
 				
 			}
 			catch(NumberFormatException e){
@@ -43,7 +47,7 @@ public class RtTest {
 			for(VehicleController v : sim.vehicles){
 				System.out.println("is this thing on?");
 				RealtimeThread realCont = new RealtimeThread(null, null, null, null, null, v);
-				PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(3,0), null, null,new OverrunHand(realCont, overV),new MissHand(realCont, missV));
+				PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(7,0), null, null,new OverrunHand(realCont, overV),new MissHand(realCont, missV));
 				//realCont.setSchedulingParameters(prip); 
 				realCont.setReleaseParameters(pp1);
 				realCont.start();
@@ -56,7 +60,7 @@ public class RtTest {
 }
 			
 			RealtimeThread realSim = new RealtimeThread(null, null, null, null, null, sim);
-			PeriodicParameters pp3 = new PeriodicParameters(null, new RelativeTime(10,0), null, null, new OverrunHand(realSim, overSim), new MissHand(realSim, missSim));
+			PeriodicParameters pp3 = new PeriodicParameters(null, new RelativeTime(20,0), null, null, new OverrunHand(realSim, overSim), new MissHand(realSim, missSim));
 			//realSim.setSchedulingParameters(prip); 
 			realSim.setReleaseParameters(pp3);
 			realSim.start();
