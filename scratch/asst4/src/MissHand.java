@@ -9,6 +9,7 @@ class MissHand extends AsyncEventHandler {
 	 }
 	 
 	 public void handleAsyncEvent(){
+		 System.out.println("MISS");
 		 rt.schedulePeriodic();
 	 }
 }
