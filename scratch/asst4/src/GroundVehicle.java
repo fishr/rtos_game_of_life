@@ -108,6 +108,7 @@ public class GroundVehicle implements Runnable {
 	}
 	
 	public void run(){
+		
 		while(this.sec<Simulator.MAX_RUNTIME){
 			Timestamp time = this.sim.getTime();
 			this.updateState(time.sec, time.usec);
