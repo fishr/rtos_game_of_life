@@ -20,7 +20,7 @@ public class RtTest {
 				GroundVehicle gv3 = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, false);
 				LeadingController lc = sim.addLeaderVehicle(gv3);
 				GroundVehicle gv2 = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, false);
-				sim.addFollowVehicle(gv2,gv);
+				sim.addFollowVehicle(gv2,gv3);
 				lc.addFollower(gv.hashCode());
 				lc.addFollower(gv2.hashCode());
 				
