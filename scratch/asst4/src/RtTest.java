@@ -17,6 +17,8 @@ public class RtTest {
 				double[] temp = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
 				GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, false);
 				sim.addCircleVehicle(gv);
+				GroundVehicle gv2 = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, false);
+				sim.addFollowVehicle(gv2,gv);
 				
 			}
 			catch(NumberFormatException e){

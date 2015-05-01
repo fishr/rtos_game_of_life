@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+
 import javax.realtime.RealtimeThread;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -49,6 +51,17 @@ public class Simulator implements Runnable{
 	public void addCircleVehicle(GroundVehicle gv){
 		CircleController cc = new CircleController(this, gv);
 		__addgroundvehicle(cc,gv);
+	}
+	
+	public LeadingController addLeaderVehicle(GroundVehicle gv){
+		LeadingController vc = new LeadingController(this, gv);
+		__addgroundvehicle(vc, gv);
+		return vc;
+	}
+	
+	public void addFollowVehicle(GroundVehicle gv, GroundVehicle leader){
+		FollowingController vc = new FollowingController(this, gv, leader);
+		__addgroundvehicle(vc, gv);
 	}
 	
 	private synchronized void __addgroundvehicle(VehicleController vc, GroundVehicle gv){
