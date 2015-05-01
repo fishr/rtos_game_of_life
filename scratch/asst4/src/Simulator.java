@@ -36,7 +36,7 @@ public class Simulator implements Runnable{
 		this.lock = new Boolean(false);
 	}
 	
-	public void setCost(int c){
+	public void setCost(long c){
 		this.cost=c;
 	}
 	
