@@ -1,15 +1,22 @@
+import java.util.Hashtable;
+
 import javax.realtime.*;
 
 class MissHand extends AsyncEventHandler {
 	 RealtimeThread rt;
+	 Hashtable<Long, Long> missDict;
+	 private int miss=0;
 	 
 	 public MissHand(RealtimeThread rtin){
 		 super(new PriorityParameters(PriorityScheduler.instance().getMaxPriority()), null, null, null, null, null);
-		 rt=rtin;
+		 this.rt=rtin;
+		 this.missDict = new Hashtable<Long, Long>();
 	 }
 	 
 	 public void handleAsyncEvent(){
+		 miss++;
+		 missDict.put(System.currentTimeMillis(), (long) this.miss);
 		 System.out.println("MISS");
-		 rt.schedulePeriodic();
+		 this.rt.schedulePeriodic();
 	 }
 }

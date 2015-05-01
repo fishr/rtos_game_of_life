@@ -16,8 +16,6 @@ public class Simulator implements Runnable{
 	private NonRTClock clk;
     Hashtable<Integer, Keyframe> schedules;
     
-    long cost=0;
-    
     public Boolean lock;
 	
 	public static final int SIM_STEP = 10;
@@ -34,10 +32,6 @@ public class Simulator implements Runnable{
 		this.schedules = new Hashtable<Integer, Keyframe>();
 		
 		this.lock = new Boolean(false);
-	}
-	
-	public void setCost(long c){
-		this.cost=c;
 	}
 	
 	public void addGroundVehicle(GroundVehicle gv){

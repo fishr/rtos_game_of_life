@@ -13,7 +13,7 @@ public class RtTest {
 				sim.dc.traceOn();
 				
 				double[] temp = {100*Math.random(),100*Math.random(),(2*Math.random()-1)*Math.PI};
-				GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, true);
+				GroundVehicle gv = new GroundVehicle(temp, 10*Math.random(), Math.PI/2*(Math.random()-1/2), sim, false);
 				sim.addCircleVehicle(gv);
 				
 			}
@@ -32,20 +32,20 @@ public class RtTest {
 			for(VehicleController v : sim.vehicles){
 				System.out.println("is this thing on?");
 				RealtimeThread realCont = new RealtimeThread(null, null, null, null, null, v);
-				PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,new OverrunHand(realCont,sim),new MissHand(realCont));
+				PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,new OverrunHand(realCont),new MissHand(realCont));
 				//realCont.setSchedulingParameters(prip); 
 				realCont.setReleaseParameters(pp1);
 				realCont.start();
 
 				RealtimeThread realVeh = new RealtimeThread(null, null, null, null, null, v.getVehicleRun());
-				PeriodicParameters pp2 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,new OverrunHand(realVeh,sim),new MissHand(realVeh));
+				PeriodicParameters pp2 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,new OverrunHand(realVeh),new MissHand(realVeh));
 				//realVeh.setSchedulingParameters(prip); 
 				realVeh.setReleaseParameters(pp2);
 				realVeh.start();			
 }
 			
 			RealtimeThread realSim = new RealtimeThread(null, null, null, null, null, sim);
-			PeriodicParameters pp3 = new PeriodicParameters(null, new RelativeTime(15,0), null, null, new OverrunHand(realSim,sim), new MissHand(realSim));
+			PeriodicParameters pp3 = new PeriodicParameters(null, new RelativeTime(15,0), null, null, new OverrunHand(realSim), new MissHand(realSim));
 			//realSim.setSchedulingParameters(prip); 
 			realSim.setReleaseParameters(pp3);
 			realSim.start();
