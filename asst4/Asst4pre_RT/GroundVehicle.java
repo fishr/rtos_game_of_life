@@ -108,11 +108,13 @@ public class GroundVehicle implements Runnable {
 	}
 	
 	public void run(){
+		System.out.println("vehicle started");
 		while(this.sec<Simulator.MAX_RUNTIME){
 			Timestamp time = this.sim.getTime();
 			this.updateState(time.sec, time.usec);
 			this.sec = time.sec;
 			this.usec = time.usec;
+			System.out.println("thread is running!");
 			if(Thread.currentThread() instanceof RealtimeThread){
 				RealtimeThread.waitForNextPeriod();
 			}

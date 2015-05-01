@@ -21,27 +21,38 @@ public class RtTest {
 				System.out.println("ip address?");
 			}
 		}
-				
+
+
+		System.out.println("about to enter real time"); 				
 		
 		if(rt){
-			PriorityParameters prip = new PriorityParameters(PriorityScheduler.instance().getNormPriority());
+			System.out.println("just before priorities");	
+			//PriorityParameters prip = new PriorityParameters(PriorityScheduler.instance().getNormPriority());
+			System.out.println("just after");
 			for(VehicleController v : sim.vehicles){
+				System.out.println("is this thing on?");
 				RealtimeThread realCont = new RealtimeThread(null, null, null, null, null, v);
 				PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(1,0), null, null,new OverrunHand(realCont),new MissHand(realCont));
-				realCont.setSchedulingParameters(prip); 
+				//realCont.setSchedulingParameters(prip); 
 				realCont.setReleaseParameters(pp1);
+				realCont.schedulePeriodic();
 
 				RealtimeThread realVeh = new RealtimeThread(null, null, null, null, null, v.getVehicleRun());
 				PeriodicParameters pp2 = new PeriodicParameters(null, new RelativeTime(5,0), null, null,new OverrunHand(realVeh),new MissHand(realVeh));
-				realCont.setSchedulingParameters(prip); 
-				realCont.setReleaseParameters(pp2);
-			}
+				//realVeh.setSchedulingParameters(prip); 
+				realVeh.setReleaseParameters(pp2);
+				realVeh.schedulePeriodic();			
+}
 			
 			RealtimeThread realSim = new RealtimeThread(null, null, null, null, null, sim);
-			PeriodicParameters pp1 = new PeriodicParameters(null, new RelativeTime(5,0), null, null, new OverrunHand(realSim), new MissHand(realSim));
-			realSim.setSchedulingParameters(prip); 
-			realSim.setReleaseParameters(pp1);
-			
+			PeriodicParameters pp3 = new PeriodicParameters(null, new RelativeTime(5,0), null, null, new OverrunHand(realSim), new MissHand(realSim));
+			//realSim.setSchedulingParameters(prip); 
+			realSim.setReleaseParameters(pp3);
+			realSim.schedulePeriodic();
+
+			System.out.println("things should be scheduled");
+
+	
 			try {
 				realSim.join();
 			}catch (InterruptedException e) {
