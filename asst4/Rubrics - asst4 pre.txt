@@ -1,0 +1,21 @@
+Rubric for Asst4 Pre
+
+10/50
+
+Max: 50
+
+1. Screenshot for logging in and running simulator on the remote machine (10)
+: -10
+
+2. A description of your task parameters, and a schedule under EDF (10)
+: -10
+
+3. A different set of parameter values such that the schedule is
+different under RMA (10)
+: -10
+
+4. non-real-time trajectories over time (10)
+: -10
+
+5. NT Source Code (5)
+6. RT Source Code (5)
